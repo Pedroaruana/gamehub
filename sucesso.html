@@ -1,0 +1,13 @@
+<h1>Compra realizada com sucesso 🎉</h1>
+
+<p id="pedido"></p>
+<button class="voltar-btn" onclick="window.location.href='index.html'">
+  Voltar para tela inicial
+</button>
+<script>
+const params = new URLSearchParams(window.location.search);
+const id = params.get("pedido");
+
+document.getElementById("pedido").innerText =
+  "Pedido ID: " + id;
+</script>

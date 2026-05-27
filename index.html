@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <title>GameHub</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+
+<body>
+
+ 
+<div class="sidebar" id="sidebar">
+
+  <div class="sidebar-top">
+    <div class="logo-side">🎮 GAMEHUB</div>
+    <span class="close-btn" onclick="toggleSidebar()">✖</span>
+  </div>
+
+  <!-- CATEGORIAS -->
+  <div class="item-wrapper">
+    <a href="#" class="item">📋 CATEGORIAS</a>
+    <div class="submenu">
+      <a href="#">Ação</a>
+      <a href="#">RPG</a>
+      <a href="#">Terror</a>
+      <a href="#">Esporte</a>
+    </div>
+  </div>
+
+  <!-- OFERTAS -->
+  <div class="item-wrapper">
+    <a href="#" class="item">🔥 OFERTAS RELÂMPAGO</a>
+    <div class="submenu">
+      <a href="#">Até R$20</a>
+      <a href="#">Até R$50</a>
+      <a href="#">Promoções do dia</a>
+    </div>
+  </div>
+
+  <!-- GIFT CARDS -->
+  <div class="item-wrapper">
+    <a href="#" class="item">🎁 GIFT CARDS</a>
+    <div class="submenu">
+      <a href="#">XBOX</a>
+      <a href="#">PSN</a>
+      <a href="#">PLAY STORE</a>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- PC -->
+  <div class="item-wrapper">
+    <a href="#" class="item">🖥 PC</a>
+    <div class="submenu">
+      <a href="#">Steam</a>
+      <a href="#">Epic Games</a>
+      <a href="#">Ubisoft</a>
+    </div>
+  </div>
+
+  <!-- PLAYSTATION -->
+  <div class="item-wrapper">
+    <a href="#" class="item">🎮 PLAYSTATION</a>
+    <div class="submenu">
+      <a href="#">PS4</a>
+      <a href="#">PS5</a>
+    </div>
+  </div>
+
+  <!-- XBOX -->
+  <div class="item-wrapper">
+    <a href="#" class="item">🎮 XBOX</a>
+    <div class="submenu">
+      <a href="#">Xbox One</a>
+      <a href="#">Xbox Series</a>
+    </div>
+  </div>
+
+  <!-- NINTENDO -->
+  <div class="item-wrapper">
+    <a href="#" class="item">🎮 NINTENDO</a>
+    <div class="submenu">
+      <a href="#">Switch</a>
+    </div>
+  </div>
+
+  <!-- MOBILE -->
+  <div class="item-wrapper">
+    <a href="#" class="item">📱 MOBILE</a>
+    <div class="submenu">
+      <a href="#">Android</a>
+      <a href="#">iOS</a>
+    </div>
+  </div>
+
+  <hr>
+
+<div class="item-wrapper">
+  <a href="#" class="item">❤️ FAVORITOS</a>
+
+  <div class="submenu" id="favoritosMenu">
+    <span>Nenhum favorito</span>
+  </div>
+</div>
+
+  <!-- CASHBACK -->
+  <div class="item-wrapper">
+    <a href="#" class="item">💰 CASHBACK</a>
+    <div class="submenu">
+      <a href="#">Como funciona</a>
+      <a href="#">Minhas recompensas</a>
+    </div>
+  </div>
+
+</div>
+
+
+
+
+<!-- OVERLAY -->
+<div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+
+
+<header class="header">
+  <!-- ESQUERDA -->
+  <div class="left">
+
+   
+    <div class="menu" onclick="toggleSidebar()">☰</div>
+    <a href="index.html" class="logo">GAMEHUB</a>
+
+  </div>
+  
+  <!-- BUSCA -->
+  <div class="search-box center">
+
+  <input
+    type="text"
+    id="searchInput"
+    placeholder="Pesquisar jogos..."
+    autocomplete="off"
+  >
+
+  <span class="search-icon">🔍</span>
+
+  <div id="searchResults" class="search-results"></div>
+
+</div>
+
+  <!-- DIREITA -->
+  <div class="actions">
+
+    <!-- CARRINHO -->
+    <div class="cart-header" id="cartHeader">
+      🛒
+      <span class="cart-count" id="cartCount">0</span>
+
+      <div class="cart-dropdown" id="cartDropdown">
+
+        <!-- LISTA DE ITENS -->
+        <div class="cart-content">
+          <p class="empty">Seu carrinho está vazio</p>
+        </div>
+
+        <!-- RODAPÉ -->
+        <div class="cart-footer">
+          <div class="subtotal">
+            Subtotal: <span id="cartTotal">R$ 0,00</span>
+          </div>
+
+          <button class="finish-btn" onclick="irParaCheckout()">
+  Finalizar
+</button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- LOGIN -->
+    <button class="login" onclick="window.location.href='login.html'">
+  ENTRAR
+</button>
+
+
+
+
+</div>
+
+</header>
+
+<section class="hero" id="hero">
+  <div class="hero-info">
+    <h1 class="hero-title">BATTLEFIELD 6</h1>
+
+    <p class="hero-sub">
+      Enter the future of gaming
+    </p>
+
+   <button class="hero-btn" onclick="abrirJogo({
+  title: 'Battlefield 6',
+  thumbnail: 'banner.jpg',
+  price: '249.90',
+  platform: 'Windows',
+  release_date: '2026',
+  descricao: 'Battlefield 6 coloca os jogadores em combates modernos de larga escala com veículos e destruição avançada.'
+})">
+  ▶ GARANTA AGORA
+</button>
+  </div>
+</section>
+<!-- 🔥 DESTAQUES -->
+<section class="row">
+  <h2>🔥 DESTAQUES DO MÊS</h2>
+
+<div class="row-wrapper">
+  <button class="arrow left" onclick="scrollRow('populares', -300)">‹</button>
+  <div class="row-games" id="populares"></div>
+  <button class="arrow right" onclick="scrollRow('populares', 300)">›</button>
+</div>
+</section>
+
+
+
+<section class="benefits">
+
+  <div class="benefit-item">
+    <div class="benefit-icon">✔</div>
+
+    <div>
+      <span>Loja</span>
+      <h3>100% Oficial</h3>
+    </div>
+  </div>
+
+  <div class="benefit-item">
+    <div class="benefit-icon">🛡</div>
+
+    <div>
+      <span>Experiência</span>
+      <h3>Segura e simples</h3>
+    </div>
+  </div>
+
+  <div class="benefit-item">
+    <div class="benefit-icon">🎮</div>
+
+    <div>
+      <span>Divirta-se com</span>
+      <h3>Os melhores jogos</h3>
+    </div>
+  </div>
+
+</section>
+
+
+
+
+<!-- 🎮 AÇÃO -->
+<section class="row">
+  <h2>🎮 JOGOS POR ATÉ R$50</h2>
+
+<div class="row-wrapper">
+  <button class="arrow left" onclick="scrollRow('acao', -300)">‹</button>
+  <div class="row-games" id="acao"></div>
+  <button class="arrow right" onclick="scrollRow('acao', 300)">›</button>
+</div>
+</section>
+
+
+<section class="banners">
+
+  <div class="banner">
+    <img src="imagem1.jpg" alt="Jogo 1">
+  </div>
+
+  <div class="banner">
+    <img src="imagem2.jpg" alt="Jogo 2">
+  </div>
+
+</section>
+
+</section>
+
+<section class="row">
+  <h2>🌐 LANÇAMENTOS EXCLUSIVOS</h2>
+
+  <div class="row-wrapper">
+    <button class="arrow left" onclick="scrollRow('api-games', -300)">‹</button>
+    <div class="row-games" id="api-games"></div>
+    <button class="arrow right" onclick="scrollRow('api-games', 300)">›</button>
+  </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+<script src="supabaseClient.js"></script>
+
+
+<script src="auth.js"></script>
+<script src="script.js"></script>
+<script src="jogos.js"></script>
+
+
+<!-- 🔥 FUNÇÃO DA SETA -->
+<script>
+function scrollRow(id, amount) {
+  const container = document.getElementById(id);
+  container.scrollLeft += amount;
+}
+</script>
+
+<script>
+window.abrirJogo = function (data) {
+  const jogo = typeof data === "string"
+    ? JSON.parse(decodeURIComponent(data))
+    : data;
+
+  localStorage.setItem("jogoSelecionado", JSON.stringify(jogo));
+
+  window.location.href = "detalhes.html";
+};
+
+</script>
+
+
+</body>
+
+<!-- BOTÃO FLUTUANTE DE CHAT -->
+<div class="chat-btn" onclick="abrirChat()">
+  💬
+</div>
+
+<!-- CAIXA DO CHAT -->
+<div class="chat-box" id="chatBox">
+  <div class="chat-header">
+    Suporte
+    <span onclick="fecharChat()">✖</span>
+  </div>
+
+  <div class="chat-body">
+    <p>👋 Olá! Como posso ajudar?</p>
+  </div>
+
+  <div class="chat-footer">
+    <input type="text" placeholder="Digite sua mensagem...">
+    <button>Enviar</button>
+  </div>
+</div>
+
+
+<!-- =========================
+     MAIS VENDIDOS
+========================= -->
+
+<section class="mais-vendidos">
+
+  <div class="top-title">
+    <h2>🔥 MAIS VENDIDOS</h2>
+    <button>Ver mais</button>
+  </div>
+
+  <div class="vendidos-grid">
+
+    <!-- 1 -->
+    <div class="vendido-card">
+      <div class="rank">1</div>
+        <img
+    class="vendido-img"
+    src="https://cdn.cloudflare.steamstatic.com/steam/apps/271590/header.jpg"
+    alt="GTA V"
+  >
+      
+      
+      <div class="vendido-info">
+        <h3>GTA V</h3>
+
+        <div class="platforms">
+          <span>Windows</span>
+          <span>Rockstar</span>
+        </div>
+
+        <div class="price-row">
+          <div>
+            <span class="old-price">R$ 199,90</span>
+            <span class="new-price">R$ 59,90</span>
+          </div>
+
+          <div class="countdown">7d 00:00:00</div>
+           
+          <div class="actions-vendido">
+           <span class="cart">🛒</span>
+            <span class="fav">♡</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="vendido-card">
+      <div class="rank">2</div>
+      <img
+  class="vendido-img"
+  src="https://cdn.cloudflare.steamstatic.com/steam/apps/1174180/header.jpg"
+  alt="Red Dead Redemption 2"
+>
+      
+
+      <div class="vendido-info">
+        <h3>Red Dead Redemption 2</h3>
+
+        <div class="platforms">
+          <span>Windows</span>
+          <span>Rockstar</span>
+        </div>
+
+        <div class="price-row">
+          <div>
+            <span class="old-price">R$ 149,90</span>
+            <span class="new-price">R$ 79,90</span>
+          </div>
+           <div class="countdown">7d 00:00:00</div>
+          <div class="actions-vendido">
+            <span class="cart">🛒</span>
+            <span class="fav">♡</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="vendido-card">
+      <div class="rank">3</div>
+      <img
+  class="vendido-img"
+  src="https://cdn.cloudflare.steamstatic.com/steam/apps/1091500/header.jpg"
+  alt="Cyberpunk 2077"
+>
+      
+      <div class="vendido-info">
+        <h3>Cyberpunk 2077</h3>
+
+        <div class="platforms">
+          <span>Windows</span>
+          <span>Steam</span>
+        </div>
+
+        <div class="price-row">
+          <div>
+            <span class="old-price">R$ 119,90</span>
+            <span class="new-price">R$ 39,90</span>
+          </div>
+           <div class="countdown">7d 00:00:00</div>
+          <div class="actions-vendido">
+            <span class="cart">🛒</span>
+            <span class="fav">♡</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4 -->
+    <div class="vendido-card">
+      <div class="rank">4</div>
+      <img
+  class="vendido-img"
+  src="https://cdn.cloudflare.steamstatic.com/steam/apps/292030/header.jpg"
+  alt="The Witcher 3"
+>
+      
+
+      <div class="vendido-info">
+        <h3>The Witcher 3</h3>
+
+        <div class="platforms">
+          <span>Windows</span>
+          <span>Steam</span>
+        </div>
+
+        <div class="price-row">
+          <div>
+            <span class="old-price">R$ 99,90</span>
+            <span class="new-price">R$ 29,90</span>
+          </div>
+           <div class="countdown">7d 00:00:00</div>
+
+
+          <div class="actions-vendido">
+            <span class="cart">🛒</span>
+            <span class="fav">♡</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5 -->
+    <div class="vendido-card">
+      <div class="rank">5</div>
+      <img
+  class="vendido-img"
+  src="https://cdn.cloudflare.steamstatic.com/steam/apps/1245620/header.jpg"
+  alt="Elden Ring"
+>
+      
+
+      <div class="vendido-info">
+        <h3>Elden Ring</h3>
+
+        <div class="platforms">
+          <span>PS5</span>
+          <span>Bandai</span>
+        </div>
+
+        <div class="price-row">
+          <div>
+            <span class="old-price">R$ 249,90</span>
+            <span class="new-price">R$ 99,90</span>
+          </div>
+           <div class="countdown">7d 00:00:00</div>
+
+
+          <div class="actions-vendido">
+            <span class="cart">🛒</span>
+            <span class="fav">♡</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6 -->
+    <div class="vendido-card">
+      <div class="rank">6</div>
+      <img
+  class="vendido-img"
+  src="https://shared.cloudflare.steamstatic.com/store_item_assets/steam/apps/2933620/header.jpg"
+  alt="Call of Duty Black Ops 6"
+>
+      
+
+      <div class="vendido-info">
+        <h3>Call of Duty Black Ops 6</h3>
+
+        <div class="platforms">
+          <span>Xbox</span>
+          <span>Activision</span>
+        </div>
+
+        <div class="price-row">
+          <div>
+            <span class="old-price">R$ 199,90</span>
+            <span class="new-price">R$ 79,90</span>
+          </div>
+          <div class="countdown">7d 00:00:00</div>
+
+          <div class="actions-vendido">
+            <span class="cart">🛒</span>
+            <span class="fav">♡</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<section class="steam-newsletter">
+
+  <div class="steam-newsletter-content">
+    <h2>Clube de Descontos</h2>
+
+    <p>
+      Receba ofertas exclusivas e promoções de jogos direto no seu e-mail.
+      <br>
+      Fique por dentro das melhores oportunidades antes de todo mundo.
+    </p>
+
+    <div class="steam-form">
+      <input type="email" placeholder="Digite seu e-mail">
+      <button>Quero descontos</button>
+    </div>
+
+    <span>Sem spam. Só promoções de jogos.</span>
+  </div>
+
+</section>
+
+<footer class="footer">
+
+  <div class="footer-top">
+
+    <div class="footer-col">
+      <h3>Sobre</h3>
+      <a href="#">Sobre o GameHub</a>
+      <a href="#">Política de privacidade</a>
+      <a href="#">Termos de uso</a>
+    </div>
+
+    <div class="footer-col">
+      <h3>Suporte</h3>
+      <a href="#">Ajuda</a>
+      <a href="#">Contato</a>
+      <a href="#">Chat ao vivo</a>
+    </div>
+
+    <div class="footer-col">
+      <h3>Afiliados</h3>
+      <a href="#">Programa de afiliados</a>
+    </div>
+
+    <div class="footer-col">
+      <h3>Siga-nos</h3>
+
+      <div class="social-icons">
+        <span>📱</span>
+        <span>📸</span>
+        <span>🎮</span>
+      </div>
+
+      <p class="secure">🔒 Segurança Garantida</p>
+    </div>
+
+  </div>
+
+  <div class="footer-payments">
+    <h3>Formas de Pagamento</h3>
+
+    <div class="payments">
+      <span class="pay nubank">Nubank</span>
+      <span class="pay pix">Pix</span>
+      <span class="pay picpay">PicPay</span>
+    </div>
+  </div>
+
+  <div class="footer-copy">
+    © 2026 GameHub - Todos os direitos reservados
+  </div>
+
+</footer>
+
+</html>

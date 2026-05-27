@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Detalhes do Jogo</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="sidebar" id="sidebar">
+
+  <div class="sidebar-top">
+    <div class="logo-side">🎮 GAMEHUB</div>
+    <span class="close-btn" onclick="toggleSidebar()">✖</span>
+  </div>
+
+  <!-- CATEGORIAS -->
+  <div class="item-wrapper">
+    <a href="#" class="item">📋 CATEGORIAS</a>
+    <div class="submenu">
+      <a href="#">Ação</a>
+      <a href="#">RPG</a>
+      <a href="#">Terror</a>
+      <a href="#">Esporte</a>
+    </div>
+  </div>
+
+  <!-- OFERTAS -->
+  <div class="item-wrapper">
+    <a href="#" class="item">🔥 OFERTAS RELÂMPAGO</a>
+    <div class="submenu">
+      <a href="#">Até R$20</a>
+      <a href="#">Até R$50</a>
+      <a href="#">Promoções do dia</a>
+    </div>
+  </div>
+
+  <!-- GIFT CARDS -->
+  <div class="item-wrapper">
+    <a href="#" class="item">🎁 GIFT CARDS</a>
+    <div class="submenu">
+      <a href="#">XBOX</a>
+      <a href="#">PSN</a>
+      <a href="#">PLAY STORE</a>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- PC -->
+  <div class="item-wrapper">
+    <a href="#" class="item">🖥 PC</a>
+    <div class="submenu">
+      <a href="#">Steam</a>
+      <a href="#">Epic Games</a>
+      <a href="#">Ubisoft</a>
+    </div>
+  </div>
+
+  <!-- PLAYSTATION -->
+  <div class="item-wrapper">
+    <a href="#" class="item">🎮 PLAYSTATION</a>
+    <div class="submenu">
+      <a href="#">PS4</a>
+      <a href="#">PS5</a>
+    </div>
+  </div>
+
+  <!-- XBOX -->
+  <div class="item-wrapper">
+    <a href="#" class="item">🎮 XBOX</a>
+    <div class="submenu">
+      <a href="#">Xbox One</a>
+      <a href="#">Xbox Series</a>
+    </div>
+  </div>
+
+  <!-- NINTENDO -->
+  <div class="item-wrapper">
+    <a href="#" class="item">🎮 NINTENDO</a>
+    <div class="submenu">
+      <a href="#">Switch</a>
+    </div>
+  </div>
+
+  <!-- MOBILE -->
+  <div class="item-wrapper">
+    <a href="#" class="item">📱 MOBILE</a>
+    <div class="submenu">
+      <a href="#">Android</a>
+      <a href="#">iOS</a>
+    </div>
+  </div>
+
+  <hr>
+
+<div class="item-wrapper">
+  <a href="#" class="item">❤️ FAVORITOS</a>
+
+  <div class="submenu" id="favoritosMenu">
+    <span>Nenhum favorito</span>
+  </div>
+</div>
+
+  <!-- CASHBACK -->
+  <div class="item-wrapper">
+    <a href="#" class="item">💰 CASHBACK</a>
+    <div class="submenu">
+      <a href="#">Como funciona</a>
+      <a href="#">Minhas recompensas</a>
+    </div>
+  </div>
+
+</div>
+
+
+
+
+<!-- OVERLAY -->
+<div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+
+
+<header class="header">
+  <!-- ESQUERDA -->
+  <div class="left">
+
+   
+    <div class="menu" onclick="toggleSidebar()">☰</div>
+    <a href="index.html" class="logo">GAMEHUB</a>
+
+  </div>
+  
+  <!-- BUSCA -->
+  <div class="search-box center">
+
+  <input
+    type="text"
+    id="searchInput"
+    placeholder="Pesquisar jogos..."
+    autocomplete="off"
+  >
+
+  <span class="search-icon">🔍</span>
+
+  <div id="searchResults" class="search-results"></div>
+
+</div>
+
+  <!-- DIREITA -->
+  <div class="actions">
+
+    <!-- CARRINHO -->
+    <div class="cart-header" id="cartHeader">
+      🛒
+      <span class="cart-count" id="cartCount">0</span>
+
+      <div class="cart-dropdown" id="cartDropdown">
+
+        <!-- LISTA DE ITENS -->
+        <div class="cart-content">
+          <p class="empty">Seu carrinho está vazio</p>
+        </div>
+
+        <!-- RODAPÉ -->
+        <div class="cart-footer">
+          <div class="subtotal">
+            Subtotal: <span id="cartTotal">R$ 0,00</span>
+          </div>
+
+          <button class="finish-btn" onclick="irParaCheckout()">
+  Finalizar
+</button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- LOGIN -->
+    <button class="login" onclick="window.location.href='login.html'">
+  ENTRAR
+</button>
+
+
+
+
+</div>
+
+</header>
+  
+<div class="game-page">
+
+  <div class="game-banner">
+    <img id="banner" src="">
+  </div>
+
+  <div class="game-container">
+
+    <div class="game-left">
+      <img id="img" class="game-cover">
+
+      <button class="btn-cart" onclick="adicionarCarrinho()">
+  🛒 Adicionar ao Carrinho
+</button>
+    </div>
+
+    <div class="game-right">
+
+      <h1 id="titulo"></h1>
+
+      <div class="game-meta">
+        <span>📅 <span id="lancamento">2024</span></span>
+        <span>🎮 <span id="genero">Ação</span></span>
+        <span>💻 <span id="plataforma"></span></span>
+      </div>
+
+     <div class="price-fav">
+  <div class="game-price" id="preco"></div>
+  <span id="favBtn" class="heart">♡</span>
+</div>
+      <h2>Sobre o jogo</h2>
+
+      <p id="descricao"></p>
+
+    </div>
+
+  </div>
+
+  <div class="requirements">
+
+    <h2>Requisitos Mínimos</h2>
+
+    <ul>
+      <li><strong>SO:</strong> Windows 10 64-bit</li>
+      <li><strong>Processador:</strong> Intel Core i5</li>
+      <li><strong>Memória:</strong> 8 GB RAM</li>
+      <li><strong>Vídeo:</strong> GTX 1050</li>
+      <li><strong>Armazenamento:</strong> 20 GB livres</li>
+    </ul>
+
+  </div>
+
+</div>
+
+<footer class="footer">
+
+  <div class="footer-top">
+
+    <div class="footer-col">
+      <h3>Sobre</h3>
+      <a href="#">Sobre o GameHub</a>
+      <a href="#">Política de privacidade</a>
+      <a href="#">Termos de uso</a>
+    </div>
+
+    <div class="footer-col">
+      <h3>Suporte</h3>
+      <a href="#">Ajuda</a>
+      <a href="#">Contato</a>
+      <a href="#">Chat ao vivo</a>
+    </div>
+
+    <div class="footer-col">
+      <h3>Afiliados</h3>
+      <a href="#">Programa de afiliados</a>
+    </div>
+
+    <div class="footer-col">
+      <h3>Siga-nos</h3>
+
+      <div class="social-icons">
+        <span>📱</span>
+        <span>📸</span>
+        <span>🎮</span>
+      </div>
+
+      <p class="secure">🔒 Segurança Garantida</p>
+    </div>
+
+  </div>
+
+  <div class="footer-payments">
+    <h3>Formas de Pagamento</h3>
+
+    <div class="payments">
+      <span class="pay nubank">Nubank</span>
+      <span class="pay pix">Pix</span>
+      <span class="pay picpay">PicPay</span>
+    </div>
+  </div>
+
+  <div class="footer-copy">
+    © 2026 GameHub - Todos os direitos reservados
+  </div>
+
+</footer>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabaseClient.js"></script>
+<script src="auth.js"></script>
+<script src="jogos.js"></script>
+<script src="script.js"></script>
+
+
+
+
+
+<script>
+const raw = localStorage.getItem("jogoSelecionado");
+
+
+const favBtn = document.getElementById("favBtn");
+
+async function atualizarFav() {
+  const { data: { user } } = await window.supabaseClient.auth.getUser();
+
+  if (!user || !jogo) return;
+
+  const { data } = await window.supabaseClient
+    .from("favoritos")
+    .select("*")
+    .eq("user_id", user.id)
+    .eq("jogo", jogo.title);
+
+  if (data && data.length > 0) {
+    favBtn.classList.add("active");
+    favBtn.innerText = "❤";
+  }
+}
+
+favBtn.addEventListener("click", async () => {
+
+  const { data: { user } } = await window.supabaseClient.auth.getUser();
+
+  if (!user) {
+    alert("Faça login");
+    return;
+  }
+
+  const ativo = favBtn.classList.contains("active");
+
+  if (ativo) {
+
+    await window.supabaseClient
+      .from("favoritos")
+      .delete()
+      .eq("user_id", user.id)
+      .eq("jogo", jogo.title);
+
+    favBtn.classList.remove("active");
+    favBtn.innerText = "♡";
+
+  } else {
+
+    await window.supabaseClient
+      .from("favoritos")
+      .insert({
+        user_id: user.id,
+        jogo: jogo.title
+      });
+
+    favBtn.classList.add("active");
+    favBtn.innerText = "❤";
+  }
+
+  carregarFavoritosMenu(); // atualiza menu lateral
+});
+
+atualizarFav();
+
+
+let jogo = null;
+
+try {
+  jogo = JSON.parse(decodeURIComponent(raw));
+} catch (e) {
+  try {
+    jogo = JSON.parse(raw);
+  } catch (err) {
+    console.log("Erro ao ler jogo:", err);
+  }
+}
+
+console.log("JOGO FINAL:", jogo);
+
+if (jogo) {
+  document.getElementById("img").src = jogo.thumbnail;
+  document.getElementById("banner").src = jogo.thumbnail;
+
+  document.getElementById("titulo").innerText = jogo.title;
+  document.getElementById("descricao").innerText = jogo.descricao || "Descrição não disponível.";
+
+  document.getElementById("plataforma").innerText = jogo.platform || "PC";
+
+  document.getElementById("preco").innerText =
+    "R$ " + (jogo.price || "0,00");
+}
+</script>
+
+
+</body>
+
+<!-- BOTÃO FLUTUANTE DE CHAT -->
+<div class="chat-btn" onclick="abrirChat()">
+  💬
+</div>
+
+<!-- CAIXA DO CHAT -->
+<div class="chat-box" id="chatBox">
+  <div class="chat-header">
+    Suporte
+    <span onclick="fecharChat()">✖</span>
+  </div>
+
+  <div class="chat-body">
+    <p>👋 Olá! Como posso ajudar?</p>
+  </div>
+
+  <div class="chat-footer">
+    <input type="text" placeholder="Digite sua mensagem...">
+    <button>Enviar</button>
+  </div>
+</div>
+
+</html>

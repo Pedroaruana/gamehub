@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Checkout - GameHub</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial;
+  background: #0b1a3a;
+  color: white;
+}
+
+.checkout {
+  display: flex;
+  gap: 20px;
+  padding: 40px;
+}
+
+.left {
+  flex: 2;
+  background: #102a5c;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.right {
+  flex: 1;
+  background: #132f66;
+  padding: 20px;
+  border-radius: 10px;
+  height: fit-content;
+}
+
+.item {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.item img {
+  width: 60px;
+  border-radius: 6px;
+}
+
+.total {
+  font-size: 20px;
+  margin: 20px 0;
+}
+
+.btn {
+  width: 100%;
+  padding: 15px;
+  background: #2d6bff;
+  border: none;
+  color: white;
+  cursor: pointer;
+  border-radius: 8px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="checkout">
+
+  <div class="left">
+    <h2>Seu Carrinho</h2>
+    <div id="cart"></div>
+  </div>
+
+  <div class="right">
+
+  <h2>Formas de Pagamento</h2>
+
+<div class="payment-group">
+
+  <h3>💳 Cartão de Crédito - À Vista</h3>
+  <p>Pague à vista com cartão de crédito</p>
+
+  <label><input type="radio" name="payment" value="cartao_avista"> Visa</label>
+  <label><input type="radio" name="payment" value="cartao_avista"> Mastercard</label>
+  <label><input type="radio" name="payment" value="cartao_avista"> Elo</label>
+  <label><input type="radio" name="payment" value="cartao_avista"> Amex</label>
+
+</div>
+
+<hr>
+
+<div class="payment-group">
+
+  <h3>💳 Cartão de Crédito - Parcelado</h3>
+  <p>Até 12x com juros</p>
+
+  <label><input type="radio" name="payment" value="cartao_parcelado"> Visa</label>
+  <label><input type="radio" name="payment" value="cartao_parcelado"> Mastercard</label>
+  <label><input type="radio" name="payment" value="cartao_parcelado"> Elo</label>
+  <label><input type="radio" name="payment" value="cartao_parcelado"> Amex</label>
+
+</div>
+
+<hr>
+
+<div class="payment-group">
+  <h3>⚡ Pix</h3>
+  <label><input type="radio" name="payment" value="pix"> Pix</label>
+</div>
+
+<hr>
+
+<div class="payment-group">
+  <h3>🍏 Apple Pay</h3>
+  <label><input type="radio" name="payment" value="applepay"> Apple Pay</label>
+</div>
+
+<hr>
+
+<div class="payment-group">
+  <h3>🟡 PayPal</h3>
+  <label><input type="radio" name="payment" value="paypal"> PayPal</label>
+</div>
+
+<hr>
+
+<div class="payment-group">
+  <h3>🧾 Boleto Expresso</h3>
+  <label><input type="radio" name="payment" value="boleto"> Boleto</label>
+</div>
+
+<hr>
+
+<div class="payment-group">
+  <h3>🪙 Binance Pay</h3>
+  <label><input type="radio" name="payment" value="binance"> Binance Pay</label>
+</div>
+
+<!-- TERMOS -->
+<div class="terms">
+  <label>
+    <input type="checkbox" id="terms">
+    Li e aceito os Termos de Uso atualizados
+  </label>
+</div>
+
+<!-- TOTAL -->
+<div class="total" id="total">R$ 0,00</div>
+
+<button id="btnPay" disabled>
+  Finalizar Compra
+</button>
+
+</div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabaseClient.js"></script>
+
+<script>
+const sb = window.supabaseClient;
+
+async function carregarCarrinho() {
+
+  const { data: { user } } = await sb.auth.getUser();
+
+  if (!user) {
+    document.getElementById("cart").innerHTML =
+      "<p>Faça login para ver o carrinho</p>";
+    return;
+  }
+
+  const { data } = await sb
+    .from("carrinho")
+    .select("*")
+    .eq("user_id", user.id);
+
+  const container = document.getElementById("cart");
+  const totalEl = document.getElementById("total");
+
+  let total = 0;
+
+  if (!data || data.length === 0) {
+    container.innerHTML = "<p>Carrinho vazio</p>";
+    totalEl.innerText = "R$ 0,00";
+    return;
+  }
+
+  container.innerHTML = data.map(item => {
+    total += Number(item.price || 0);
+
+    return `
+      <div class="item">
+        <img src="${item.thumbnail}">
+        <div>
+          <p>${item.title}</p>
+          <small>R$ ${item.price}</small>
+        </div>
+      </div>
+    `;
+  }).join("");
+
+  totalEl.innerText = "R$ " + total.toFixed(2);
+}
+
+carregarCarrinho();
+
+
+// =========================
+// CHECKOUT LIMPO
+// =========================
+
+const btn = document.getElementById("btnPay");
+const terms = document.getElementById("terms");
+
+function atualizarBotao() {
+  const payment = document.querySelector('input[name="payment"]:checked');
+  btn.disabled = !(payment && terms.checked);
+}
+
+// escuta mudanças nos radios
+document.querySelectorAll('input[name="payment"]').forEach(el => {
+  el.addEventListener("change", atualizarBotao);
+});
+
+// escuta termos
+terms.addEventListener("change", atualizarBotao);
+
+
+// clique final (COMPRA REAL)
+btn.addEventListener("click", async () => {
+
+  const payment = document.querySelector('input[name="payment"]:checked');
+
+  if (!payment) {
+    alert("Selecione uma forma de pagamento");
+    return;
+  }
+
+  const { data: { user } } = await sb.auth.getUser();
+
+  if (!user) {
+    alert("Faça login primeiro");
+    return;
+  }
+
+  const { data: carrinho } = await sb
+    .from("carrinho")
+    .select("*")
+    .eq("user_id", user.id);
+
+  if (!carrinho || carrinho.length === 0) {
+    alert("Carrinho vazio");
+    return;
+  }
+
+  let total = 0;
+  carrinho.forEach(i => total += Number(i.price));
+
+  const response = await fetch("http://127.0.0.1:8000/checkout", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    user_id: user.id,
+    metodo_pagamento: payment.value,
+    itens: carrinho
+  })
+});
+
+const result = await response.json();
+
+if (!result.success) {
+  alert("Erro no checkout");
+  return;
+}
+
+const pedidoId = result.pedido_id;
+
+  await sb.from("carrinho").delete().eq("user_id", user.id);
+
+  alert("Compra realizada com sucesso!");
+
+  window.location.href = `sucesso.html?pedido=${pedidoId}`;
+});
+</script>
+
+</body>
+</html>
