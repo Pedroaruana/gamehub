@@ -1,3 +1,9 @@
+@app.middleware("http")
+async def debug_cors(request, call_next):
+    response = await call_next(request)
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    return response
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from supabase import create_client
