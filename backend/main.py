@@ -1,5 +1,3 @@
-
-
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from supabase import create_client
@@ -7,11 +5,11 @@ from dotenv import load_dotenv
 import os
 
 # carregar .env
-load_dotenv(dotenv_path=".env")
+load_dotenv(".env")
 
 app = FastAPI()
 
-# CORS
+# CORS (produção segura)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -21,6 +19,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 # conectar supabase
 supabase = create_client(
     os.getenv("SUPABASE_URL"),
@@ -30,57 +29,61 @@ supabase = create_client(
 # rota inicial
 @app.get("/")
 def home():
-    return {
-        "status": "GameHub backend online"
-    }
+    return {"status": "GameHub backend online"}
 
 # listar pedidos
 @app.get("/pedidos")
 def listar_pedidos():
-
     response = supabase.table("pedidos").select("*").execute()
-
     return response.data
 
 
-# CHECKOUT REAL
+# CHECKOUT REAL (CORRIGIDO)
 @app.post("/checkout")
 def checkout(data: dict):
 
-    user_id = data["user_id"]
-    metodo = data["metodo_pagamento"]
-    itens = data["itens"]
+    try:
+        user_id = data.get("user_id")
+        metodo = data.get("metodo_pagamento")
+        itens = data.get("itens", [])
 
-    total = 0
+        if not user_id or not itens:
+            return {"success": False, "error": "dados inválidos"}
 
-    for item in itens:
-        total += float(item["price"])
+        total = sum(float(item.get("price", 0)) for item in itens)
 
-    # cria pedido
-    pedido = supabase.table("pedidos").insert({
-        "user_id": user_id,
-        "total": total,
-        "metodo_pagamento": metodo,
-        "status": "pendente"
-    }).execute()
+        pedido = supabase.table("pedidos").insert({
+            "user_id": user_id,
+            "total": total,
+            "metodo_pagamento": metodo,
+            "status": "pendente"
+        }).execute()
 
-    pedido_id = pedido.data[0]["id"]
+        if not pedido.data:
+            return {"success": False, "error": "falha ao criar pedido"}
 
-    # cria itens
-    pedido_itens = []
+        pedido_id = pedido.data[0]["id"]
 
-    for item in itens:
+        pedido_itens = [
+            {
+                "pedido_id": pedido_id,
+                "title": item.get("title"),
+                "price": item.get("price"),
+                "thumbnail": item.get("thumbnail")
+            }
+            for item in itens
+        ]
 
-        pedido_itens.append({
-            "pedido_id": pedido_id,
-            "title": item["title"],
-            "price": item["price"],
-            "thumbnail": item["thumbnail"]
-        })
+        supabase.table("pedido_itens").insert(pedido_itens).execute()
 
-    supabase.table("pedido_itens").insert(pedido_itens).execute()
+        return {
+            "success": True,
+            "pedido_id": pedido_id
+        }
 
-    return {
-        "success": True,
-        "pedido_id": pedido_id
-    }
+    except Exception as e:
+        print("ERRO CHECKOUT:", e)
+        return {
+            "success": False,
+            "error": str(e)
+        }
