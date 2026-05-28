@@ -12,14 +12,11 @@ app = FastAPI()
 # CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "https://gamehub-omega-blond.vercel.app"
-    ],
-    allow_credentials=True,
+    allow_origins=["*"],
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 # conectar supabase
 supabase = create_client(
     os.getenv("SUPABASE_URL"),
