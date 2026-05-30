@@ -1086,9 +1086,8 @@ body {
 }
 
 .item-wrapper .submenu {
-  position: absolute;
-  top: 0;
-  left: 100%;
+  position: fixed;
+  left: 280px;
   background: #0a1f4d;
   width: 200px;
   padding: 10px;
