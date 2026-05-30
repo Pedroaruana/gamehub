@@ -513,6 +513,22 @@ window.addEventListener("DOMContentLoaded", async () => {
   });
 });
 
+document.querySelectorAll('.item-wrapper').forEach(wrapper => {
+  wrapper.addEventListener('mouseenter', () => {
+    const submenu = wrapper.querySelector('.submenu');
+    if (!submenu) return;
+    const rect = wrapper.getBoundingClientRect();
+    submenu.style.top = rect.top + 'px';
+    submenu.style.display = 'block';
+  });
+
+  wrapper.addEventListener('mouseleave', () => {
+    const submenu = wrapper.querySelector('.submenu');
+    if (!submenu) return;
+    submenu.style.display = 'none';
+  });
+});
+
 /* ── Expõe funções usadas inline no HTML ─── */
 window.removerItem    = removerItem;
 window.toggleSidebar  = toggleSidebar;

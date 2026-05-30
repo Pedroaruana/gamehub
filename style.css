@@ -1086,7 +1086,7 @@ body {
 }
 
 .item-wrapper .submenu {
-  position: fixed;
+ position: fixed;
   left: 280px;
   background: #0a1f4d;
   width: 200px;
@@ -1097,9 +1097,6 @@ body {
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
 }
 
-.item-wrapper:hover .submenu {
-  display: block;
-}
 
 .submenu a,
 .submenu span {
