@@ -1,13 +1,533 @@
-<h1>Compra realizada com sucesso 🎉</h1>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pedido Confirmado — GameHub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
 
-<p id="pedido"></p>
-<button class="voltar-btn" onclick="window.location.href='index.html'">
-  Voltar para tela inicial
-</button>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:       #07090f;
+  --surface:  #0d1220;
+  --surface2: #111827;
+  --border:   rgba(255,255,255,0.07);
+  --accent:   #3b82f6;
+  --accent-hi:#60a5fa;
+  --green:    #22c55e;
+  --green-lo: rgba(34,197,94,0.10);
+  --green-md: rgba(34,197,94,0.22);
+  --txt:      #f1f5f9;
+  --txt-dim:  #64748b;
+  --txt-muted:#334155;
+  --font-head:'Rajdhani', sans-serif;
+  --font-body:'DM Sans', sans-serif;
+}
+
+body {
+  background: var(--bg);
+  color: var(--txt);
+  font-family: var(--font-body);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  overflow-x: hidden;
+}
+
+/* ── NOISE + GLOW ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  top: -20%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 700px;
+  height: 500px;
+  background: radial-gradient(ellipse, rgba(34,197,94,.07) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── CONFETTI PARTICLES ── */
+.particles {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.particle {
+  position: absolute;
+  top: -10px;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  animation: fall linear forwards;
+}
+
+@keyframes fall {
+  0%   { transform: translateY(0) rotate(0deg); opacity: 1; }
+  80%  { opacity: 1; }
+  100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+}
+
+/* ── CARD ── */
+.card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 520px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 48px 40px 40px;
+  text-align: center;
+  animation: popIn .6s cubic-bezier(.34,1.56,.64,1) both;
+}
+
+@keyframes popIn {
+  from { opacity: 0; transform: scale(.88) translateY(20px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* ── CHECK ICON ── */
+.check-wrap {
+  margin: 0 auto 28px;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: var(--green-lo);
+  border: 2px solid var(--green-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: pulse 2.4s ease infinite;
+}
+
+@keyframes pulse {
+  0%,100% { box-shadow: 0 0 0 0 rgba(34,197,94,.25); }
+  50%      { box-shadow: 0 0 0 16px rgba(34,197,94,0); }
+}
+
+.check-icon {
+  width: 36px;
+  height: 36px;
+  stroke: var(--green);
+  stroke-width: 2.5;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 60;
+  stroke-dashoffset: 60;
+  animation: drawCheck .5s .3s ease forwards;
+}
+
+@keyframes drawCheck {
+  to { stroke-dashoffset: 0; }
+}
+
+/* ── LOGO ── */
+.logo {
+  font-family: var(--font-head);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  color: var(--txt-muted);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  animation: fadeUp .5s .1s ease both;
+}
+
+.logo span { color: var(--accent-hi); }
+
+/* ── HEADING ── */
+h1 {
+  font-family: var(--font-head);
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  color: var(--txt);
+  line-height: 1.2;
+  margin-bottom: 8px;
+  animation: fadeUp .5s .15s ease both;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: var(--txt-dim);
+  margin-bottom: 32px;
+  animation: fadeUp .5s .2s ease both;
+}
+
+/* ── ORDER BOX ── */
+.order-box {
+  background: var(--green-lo);
+  border: 1px solid var(--green-md);
+  border-radius: 12px;
+  padding: 18px 20px;
+  margin-bottom: 28px;
+  animation: fadeUp .5s .25s ease both;
+}
+
+.order-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .18em;
+  color: var(--green);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.order-id {
+  font-family: var(--font-head);
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  color: var(--txt);
+}
+
+.order-id span {
+  color: var(--txt-muted);
+  font-size: 18px;
+}
+
+/* ── STEPS ── */
+.steps {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 32px;
+  animation: fadeUp .5s .3s ease both;
+  position: relative;
+}
+
+.steps::before {
+  content: '';
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  right: 16px;
+  height: 2px;
+  background: var(--border);
+  z-index: 0;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  position: relative;
+  z-index: 1;
+}
+
+.step-dot {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  background: var(--surface2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  transition: all .3s;
+}
+
+.step.done .step-dot {
+  background: var(--green-lo);
+  border-color: var(--green-md);
+}
+
+.step.active .step-dot {
+  background: rgba(59,130,246,.15);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px rgba(59,130,246,.1);
+}
+
+.step-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .06em;
+  color: var(--txt-muted);
+  text-transform: uppercase;
+  text-align: center;
+  line-height: 1.3;
+}
+
+.step.done .step-label  { color: var(--green); }
+.step.active .step-label { color: var(--accent-hi); }
+
+/* ── INFO ROWS ── */
+.info-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  margin-bottom: 28px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  animation: fadeUp .5s .35s ease both;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 13px 16px;
+  background: var(--surface2);
+  font-size: 13px;
+  gap: 12px;
+}
+
+.info-row:not(:last-child) { border-bottom: 1px solid var(--border); }
+
+.info-key {
+  color: var(--txt-dim);
+  font-size: 12px;
+  letter-spacing: .04em;
+}
+
+.info-val {
+  font-weight: 500;
+  color: var(--txt);
+  text-align: right;
+}
+
+.badge-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  background: var(--green-lo);
+  border: 1px solid var(--green-md);
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--green);
+  letter-spacing: .06em;
+}
+
+.badge-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--green);
+  animation: blink 1.2s ease infinite;
+}
+
+@keyframes blink {
+  0%,100% { opacity: 1; }
+  50%      { opacity: .3; }
+}
+
+/* ── ACTIONS ── */
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  animation: fadeUp .5s .4s ease both;
+}
+
+.btn-primary {
+  width: 100%;
+  padding: 15px;
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
+  border: none;
+  border-radius: 12px;
+  color: #fff;
+  font-family: var(--font-head);
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform .15s, box-shadow .2s;
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 28px rgba(59,130,246,.35);
+}
+
+.btn-primary:active { transform: translateY(1px); box-shadow: none; }
+
+.btn-ghost {
+  width: 100%;
+  padding: 13px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  color: var(--txt-dim);
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color .2s, color .2s;
+}
+
+.btn-ghost:hover { border-color: var(--border-hi, #60a5fa44); color: var(--txt); }
+
+/* ── FOOTER NOTE ── */
+.footer-note {
+  margin-top: 24px;
+  font-size: 12px;
+  color: var(--txt-muted);
+  animation: fadeUp .5s .45s ease both;
+  line-height: 1.6;
+}
+
+.footer-note a { color: var(--accent-hi); text-decoration: none; }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+</style>
+</head>
+
+<body>
+
+<!-- CONFETTI -->
+<div class="particles" id="particles"></div>
+
+<div class="card">
+
+  <div class="logo">GAME<span>HUB</span></div>
+
+  <!-- CHECK ANIMADO -->
+  <div class="check-wrap">
+    <svg class="check-icon" viewBox="0 0 24 24">
+      <polyline points="20 6 9 17 4 12"/>
+    </svg>
+  </div>
+
+  <h1>Pedido Confirmado!</h1>
+  <p class="subtitle">Seu pagamento foi processado com sucesso. 🎉</p>
+
+  <!-- ID DO PEDIDO -->
+  <div class="order-box">
+    <div class="order-label">Número do pedido</div>
+    <div class="order-id"><span>#</span><span id="pedido">—</span></div>
+  </div>
+
+  <!-- STEPS / PROGRESSO -->
+  <div class="steps">
+    <div class="step done">
+      <div class="step-dot">✓</div>
+      <div class="step-label">Pagamento<br>confirmado</div>
+    </div>
+    <div class="step active">
+      <div class="step-dot">⚙</div>
+      <div class="step-label">Preparando<br>pedido</div>
+    </div>
+    <div class="step">
+      <div class="step-dot">📦</div>
+      <div class="step-label">Enviando<br>acesso</div>
+    </div>
+    <div class="step">
+      <div class="step-dot">🎮</div>
+      <div class="step-label">Pronto para<br>jogar</div>
+    </div>
+  </div>
+
+  <!-- INFO ROWS -->
+  <div class="info-rows">
+    <div class="info-row">
+      <span class="info-key">STATUS</span>
+      <span class="info-val">
+        <span class="badge-status">
+          <span class="badge-dot"></span>
+          APROVADO
+        </span>
+      </span>
+    </div>
+    <div class="info-row">
+      <span class="info-key">DATA</span>
+      <span class="info-val" id="orderDate">—</span>
+    </div>
+    <div class="info-row">
+      <span class="info-key">ENTREGA</span>
+      <span class="info-val">Por e-mail em até 5 minutos</span>
+    </div>
+  </div>
+
+  <!-- AÇÕES -->
+  <div class="actions">
+    <button class="btn-primary" onclick="window.location.href='index.html'">
+      🎮 Ir para a Loja
+    </button>
+    <button class="btn-ghost" onclick="window.location.href='index.html'">
+      Ver meus pedidos
+    </button>
+  </div>
+
+</div>
+
+<p class="footer-note">
+  Dúvidas? Entre em contato com o <a href="#">suporte GameHub</a>.<br>
+  Guarde o número do pedido para futuras consultas.
+</p>
+
 <script>
+// ── LÓGICA ORIGINAL PRESERVADA ────────────────────────────────────────────────
 const params = new URLSearchParams(window.location.search);
 const id = params.get("pedido");
+document.getElementById("pedido").innerText = id || "—";
 
-document.getElementById("pedido").innerText =
-  "Pedido ID: " + id;
+// ── DATA DO PEDIDO ────────────────────────────────────────────────────────────
+const now = new Date();
+document.getElementById("orderDate").innerText = now.toLocaleDateString("pt-BR", {
+  day: "2-digit", month: "long", year: "numeric",
+  hour: "2-digit", minute: "2-digit"
+});
+
+// ── CONFETTI ──────────────────────────────────────────────────────────────────
+const colors = ["#22c55e","#3b82f6","#f59e0b","#a855f7","#ec4899","#60a5fa"];
+const container = document.getElementById("particles");
+
+function spawnParticle() {
+  const el = document.createElement("div");
+  el.className = "particle";
+  const size = 5 + Math.random() * 7;
+  el.style.cssText = `
+    left: ${Math.random() * 100}%;
+    width: ${size}px;
+    height: ${size}px;
+    background: ${colors[Math.floor(Math.random() * colors.length)]};
+    border-radius: ${Math.random() > .5 ? "50%" : "2px"};
+    animation-duration: ${2 + Math.random() * 3}s;
+    animation-delay: ${Math.random() * 1.5}s;
+    opacity: ${0.6 + Math.random() * 0.4};
+  `;
+  container.appendChild(el);
+  el.addEventListener("animationend", () => el.remove());
+}
+
+// Burst inicial
+for (let i = 0; i < 60; i++) spawnParticle();
+// Pingos contínuos por 4s
+const interval = setInterval(spawnParticle, 120);
+setTimeout(() => clearInterval(interval), 4000);
 </script>
+
+</body>
+</html>
