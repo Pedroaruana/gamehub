@@ -65,10 +65,10 @@ GameHub é uma plataforma full stack de e-commerce de jogos digitais, inspirada 
 ![Login](./images/login.png)
 
 ### 💳 Checkout
-![Checkout](./images/checkout.png)
+![Checkout](./images/checkouts.png)
 
 ### 🎉 Sucesso
-![Sucesso](./images/sucesso.png)
+![Sucesso](./images/sucessos.png)
 
 
 👨‍💻 Autor
