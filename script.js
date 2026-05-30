@@ -1,64 +1,65 @@
+/* ===========================================
+   GAMEHUB — script.js
+   Requerimentos: supabaseClient.js, jogos.js
+=========================================== */
+
+/* ── Helpers ─────────────────────────────── */
+
 function getSupabase() {
   return window.supabaseClient;
 }
 
-// usa o cliente já existente
-const sb = window.supabaseClient;
+/* ── Sidebar ─────────────────────────────── */
 
-async function testar() {
-  const { data, error } = await sb
-    .from("usuarios")
-    .select("*");
-
-  console.log(data, error);
+function toggleSidebar() {
+  const sidebar = document.getElementById("sidebar");
+  const overlay = document.getElementById("overlay");
+  if (!sidebar || !overlay) return;
+  sidebar.classList.toggle("open");
+  overlay.classList.toggle("show");
 }
 
-testar();
+/* ── Hero background ─────────────────────── */
 
-function criarCard(jogo, index) {
+function carregarHero() {
+  const hero = document.getElementById("hero");
+  if (!hero) return;
+  hero.style.backgroundImage = "url('./banner.jpg')";
+}
+
+/* ── Criar card de jogo ──────────────────── */
+
+function criarCard(jogo) {
   const card = document.createElement("div");
   card.classList.add("card");
 
   card.innerHTML = `
-    <img src="${jogo.thumbnail}">
-
+    <img src="${jogo.thumbnail}" alt="${jogo.title}" loading="lazy">
     <div class="card-overlay">
       <h3 class="game-title">${jogo.title}</h3>
-
       <div class="price-box">
         ${jogo.oldPrice ? `<span class="old-price">R$ ${jogo.oldPrice}</span>` : ""}
-        ${jogo.price ? `<span class="new-price">R$ ${jogo.price}</span>` : ""}
-
-        <span class="cart">🛒</span>
-        <span class="fav">♡</span>
+        ${jogo.price    ? `<span class="new-price">R$ ${jogo.price}</span>`    : ""}
+        <span class="cart" title="Adicionar ao carrinho">🛒</span>
+        <span class="fav"  title="Favoritar">♡</span>
       </div>
     </div>
   `;
 
-  const img = card.querySelector("img");
+  const img    = card.querySelector("img");
   const favBtn = card.querySelector(".fav");
   const cartBtn = card.querySelector(".cart");
 
-  // 🔗 abrir detalhes
-img.addEventListener("click", () => {
+  // Abrir detalhes
+  img.addEventListener("click", () => abrirJogo(jogo));
 
-  localStorage.setItem(
-    "jogoSelecionado",
-    JSON.stringify(jogo)
-  );
-
-  window.location.href = "detalhes.html";
-
-});
-
-  // ❤️ favorito
+  // Favoritar
   favBtn.addEventListener("click", (e) => {
     e.stopPropagation();
     favoritar(e, jogo.title, favBtn);
-    carregarFavoritosMenu();
   });
 
-  // 🛒 carrinho (AGORA CORRETO)
+  // Carrinho
   cartBtn.addEventListener("click", (e) => {
     e.stopPropagation();
     adicionarCarrinho(jogo);
@@ -67,338 +68,241 @@ img.addEventListener("click", () => {
   return card;
 }
 
-/* =========================
-   CARREGAR JOGOS
-========================= */
+/* ── Carregar prateleiras ────────────────── */
 
 function carregarJogos() {
   const populares = document.getElementById("populares");
-  const acao = document.getElementById("acao");
-  const rpg = document.getElementById("rpg");
+  const acao      = document.getElementById("acao");
 
-  if (populares) populares.innerHTML = "";
-  if (acao) acao.innerHTML = "";
-  if (rpg) rpg.innerHTML = "";
+  if (typeof jogos === "undefined") return;
 
-  jogos.forEach((jogo, index) => {
-    const card = criarCard(jogo, index);
+  jogos.forEach((jogo) => {
+    if (populares) populares.appendChild(criarCard(jogo));
 
-    populares?.appendChild(card);
-
-    if (jogo.category === "acao") {
-      acao?.appendChild(criarCard(jogo, index));
+    if (jogo.category === "acao" && acao) {
+      acao.appendChild(criarCard(jogo));
     }
-
-   
   });
 }
 
-/* =========================
-   FAVORITOS
-========================= */
+/* ── API pública (Free-to-Game) ──────────── */
+
+async function carregarApiGames() {
+  const container = document.getElementById("api-games");
+  if (!container) return;
+
+  try {
+    const response = await fetch("https://www.freetogame.com/api/games");
+    if (!response.ok) throw new Error("Falha na API");
+
+    const games = await response.json();
+    container.innerHTML = "";
+
+    games.slice(0, 20).forEach((game, index) => {
+      const precoOriginal = Math.floor(Math.random() * 150) + 50;
+      const desconto      = Math.floor(Math.random() * 70)  + 10;
+      const precoFinal    = (precoOriginal * (1 - desconto / 100)).toFixed(2);
+
+      const jogo = {
+        title:    game.title,
+        thumbnail: game.thumbnail,
+        oldPrice: precoOriginal.toFixed(2),
+        price:    precoFinal
+      };
+
+      container.appendChild(criarCard(jogo));
+    });
+  } catch (err) {
+    console.warn("Erro ao carregar API de jogos:", err.message);
+  }
+}
+
+/* ── Favoritos ───────────────────────────── */
 
 async function favoritar(e, nome, el) {
-
-  const {
-    data: { user }
-  } = await window.supabaseClient.auth.getUser();
+  const sb = getSupabase();
+  const { data: { user } } = await sb.auth.getUser();
 
   if (!user) {
     alert("Faça login para favoritar jogos.");
     return;
   }
 
-  const favoritoAtivo = el.classList.contains("ativo");
-
-  if (favoritoAtivo) {
-
-    const { error } = await window.supabaseClient
-      .from("favoritos")
+  if (el.classList.contains("ativo")) {
+    // remover
+    await sb.from("favoritos")
       .delete()
       .eq("user_id", user.id)
       .eq("jogo", nome);
 
-    console.log("DELETE:", error);
-
     el.classList.remove("ativo");
-
+    el.textContent = "♡";
   } else {
-
-    console.log("USER:", user.id);
-console.log("JOGO:", nome);
-
-
-    const { error } = await window.supabaseClient
-      .from("favoritos")
-      .insert({
-        user_id: user.id,
-        jogo: nome
-      });
-
-    console.log("INSERT:", error);
+    // inserir
+    await sb.from("favoritos")
+      .insert({ user_id: user.id, jogo: nome });
 
     el.classList.add("ativo");
+    el.textContent = "❤️";
   }
 
   carregarFavoritosMenu();
 }
-/* =========================
-   CARRINHO
-========================= */
 
-// ➕ adicionar
+async function carregarFavoritos() {
+  const sb = getSupabase();
+  const { data: { user } } = await sb.auth.getUser();
+  if (!user) return;
+
+  const { data } = await sb.from("favoritos")
+    .select("jogo")
+    .eq("user_id", user.id);
+
+  if (!data) return;
+
+  const favoritosSet = new Set(data.map(f => f.jogo));
+
+  document.querySelectorAll(".card").forEach(card => {
+    const nome   = card.querySelector(".game-title")?.textContent;
+    const favEl  = card.querySelector(".fav");
+    if (nome && favoritosSet.has(nome) && favEl) {
+      favEl.classList.add("ativo");
+      favEl.textContent = "❤️";
+    }
+  });
+}
+
+async function carregarFavoritosMenu() {
+  const menu = document.getElementById("favoritosMenu");
+  if (!menu) return;
+
+  const sb = getSupabase();
+  const { data: { user } } = await sb.auth.getUser();
+
+  if (!user) {
+    menu.innerHTML = "<span>Faça login</span>";
+    return;
+  }
+
+  const { data, error } = await sb.from("favoritos")
+    .select("jogo")
+    .eq("user_id", user.id);
+
+  if (error) { console.error("Favoritos menu:", error); return; }
+
+  if (!data || data.length === 0) {
+    menu.innerHTML = "<span>Nenhum favorito</span>";
+    return;
+  }
+
+  menu.innerHTML = data.map(item =>
+    `<a href="#">${item.jogo}</a>`
+  ).join("");
+}
+
+/* ── Carrinho ────────────────────────────── */
+
 async function adicionarCarrinho(jogo) {
-
-  const {
-    data: { user }
-  } = await window.supabaseClient.auth.getUser();
+  const sb = getSupabase();
+  const { data: { user } } = await sb.auth.getUser();
 
   if (!user) {
     alert("Faça login para usar o carrinho.");
     return;
   }
 
-  await window.supabaseClient
-    .from("carrinho")
-    .insert({
-      user_id: user.id,
-      title: jogo.title,
-      thumbnail: jogo.thumbnail,
-      price: Number(jogo.price)
-    });
+  const { error } = await sb.from("carrinho").insert({
+    user_id:   user.id,
+    title:     jogo.title,
+    thumbnail: jogo.thumbnail,
+    price:     Number(jogo.price) || 0
+  });
 
-  atualizarCarrinho();
+  if (error) {
+    console.error("Erro ao adicionar ao carrinho:", error);
+    return;
+  }
+
   animarCarrinho();
+  await atualizarCarrinho();
 }
 
-// ❌ remover
 async function removerItem(id, e) {
-
   if (e) e.stopPropagation();
 
-  const { error } = await window.supabaseClient
-    .from("carrinho")
-    .delete()
-    .eq("id", id);
-
-  console.log("REMOVER:", error);
-
-  atualizarCarrinho();
+  const sb = getSupabase();
+  await sb.from("carrinho").delete().eq("id", id);
+  await atualizarCarrinho();
 }
 
 async function atualizarCarrinho() {
-
   const container = document.querySelector(".cart-content");
-  const totalEl = document.getElementById("cartTotal");
-  const count = document.getElementById("cartCount");
+  const totalEl   = document.getElementById("cartTotal");
+  const countEl   = document.getElementById("cartCount");
 
-  const {
-    data: { user }
-  } = await window.supabaseClient.auth.getUser();
+  if (!container || !totalEl || !countEl) return;
+
+  const sb = getSupabase();
+  const { data: { user } } = await sb.auth.getUser();
 
   if (!user) {
-    count.innerText = "0";
-    totalEl.innerText = "R$ 0,00";
-    container.innerHTML =
-      "<p style='text-align:center'>Faça login</p>";
+    countEl.textContent = "0";
+    totalEl.textContent = "R$ 0,00";
+    container.innerHTML = "<p style='text-align:center;color:#aaa'>Faça login</p>";
     return;
   }
 
-  const { data: carrinho, error } =
-    await window.supabaseClient
-      .from("carrinho")
-      .select("*")
-      .eq("user_id", user.id);
+  const { data: carrinho, error } = await sb.from("carrinho")
+    .select("*")
+    .eq("user_id", user.id);
 
-  if (error) {
-    console.error(error);
-    return;
-  }
+  if (error) { console.error("Carrinho:", error); return; }
 
-  count.innerText = carrinho.length;
+  countEl.textContent = carrinho.length;
 
   if (carrinho.length === 0) {
-    container.innerHTML =
-      "<p style='text-align:center'>Carrinho vazio</p>";
-
-    totalEl.innerText = "R$ 0,00";
+    container.innerHTML = "<p style='text-align:center;color:#aaa'>Carrinho vazio</p>";
+    totalEl.textContent = "R$ 0,00";
     return;
   }
 
-
-
-
-  container.innerHTML = "";
-
   let total = 0;
-
-  carrinho.forEach((item) => {
-
+  container.innerHTML = carrinho.map(item => {
     const preco = Number(item.price) || 0;
-
     total += preco;
-
-    container.innerHTML += `
+    return `
       <div class="cart-item">
-
-        <img src="${item.thumbnail}">
-
+        <img src="${item.thumbnail}" alt="${item.title}">
         <div class="cart-info">
           <p>${item.title}</p>
+          <span class="cart-price">R$ ${preco.toFixed(2).replace(".", ",")}</span>
         </div>
-
-        <div class="cart-price">
-          R$ ${preco.toFixed(2)}
-        </div>
-
-        <span
-          class="remove-item"
-          onclick="removerItem(${item.id}, event)"
-        >
-          ✖
-        </span>
-
+        <span class="remove-item" onclick="removerItem(${item.id}, event)" title="Remover">✖</span>
       </div>
     `;
-  });
+  }).join("");
 
-  totalEl.innerText =
-    "R$ " + total.toFixed(2).replace(".", ",");
+  totalEl.textContent = "R$ " + total.toFixed(2).replace(".", ",");
 }
 
-
-  
-
-
-// 🎯 animação
 function animarCarrinho() {
   const cart = document.getElementById("cartHeader");
-
   if (!cart) return;
-
+  cart.classList.remove("bounce");
+  // force reflow para reiniciar animação
+  void cart.offsetWidth;
   cart.classList.add("bounce");
-
-  setTimeout(() => {
-    cart.classList.remove("bounce");
-  }, 400);
+  setTimeout(() => cart.classList.remove("bounce"), 400);
 }
 
-/* =========================
-   OUTROS
-========================= */
+/* ── Busca ───────────────────────────────── */
 
-function carregarHero() {
-  const hero = document.getElementById("hero");
-
-  if (!hero) return; // 🔥 impede crash
-
-  hero.style.backgroundImage = "url('./banner.jpg')";
-}
-
-/* =========================
-   CARRINHO CLICK (SEM HOVER)
-========================= */
-
-const cartHeader = document.getElementById("cartHeader");
-const cartDropdown = document.getElementById("cartDropdown");
-
-if (cartHeader && cartDropdown) {
-  cartHeader.addEventListener("click", () => {
-    cartDropdown.classList.toggle("active");
-  });
-}
-
-/* =========================
-   CLICK GLOBAL (MAIS VENDIDOS)
-========================= */
-
-document.addEventListener("click", (e) => {
-
-  // 🛒 CARRINHO
-  const cart = e.target.closest(".cart-btn, .cart");
-  if (cart) {
-    e.stopPropagation();
-
-    const card = cart.closest(".vendido-card") || cart.closest(".card");
-    if (!card) return;
-
-    const jogo = {
-      title: card.querySelector("h3")?.innerText || "Jogo",
-      price: card.querySelector(".new-price")?.innerText.replace("R$", "").trim() || "0",
-      thumbnail: card.querySelector("img")?.src || ""
-    };
-
-    adicionarCarrinho(jogo);
-  }
-
-  // ❤️ FAVORITO
-  const fav = e.target.closest(".fav-btn, .fav");
-  if (fav) {
-    e.stopPropagation();
-    fav.classList.toggle("ativo");
-  }
-
-});
-
-async function carregarApiGames() {
-
-  const container = document.getElementById("api-games");
-
-  if (!container) return;
-
-  try {
-
-    const response = await fetch(
-      "https://www.freetogame.com/api/games"
-    );
-
-    const games = await response.json();
-
-    container.innerHTML = "";
-
-    games.slice(0, 20).forEach((game, index) => {
-
-      const precoOriginal = Math.floor(Math.random() * 150) + 50;
-const desconto = Math.floor(Math.random() * 70) + 10;
-
-const precoFinal = (
-  precoOriginal * (1 - desconto / 100)
-).toFixed(2);
-
-const jogo = {
-  title: game.title,
-  thumbnail: game.thumbnail,
-  oldPrice: precoOriginal.toFixed(2),
-  price: precoFinal
-};
-
-      container.appendChild(
-        criarCard(jogo, index)
-      );
-
-    });
-
-  } catch (error) {
-
-    console.error("Erro ao carregar API:", error);
-
-  }
-
-}
-
-/* =========================
-   INIT
-========================= */
-
-
-
-const searchInput = document.getElementById("searchInput");
-const searchResults = document.getElementById("searchResults");
-
-if (searchInput && searchResults) {
+function inicializarBusca() {
+  const searchInput   = document.getElementById("searchInput");
+  const searchResults = document.getElementById("searchResults");
+  if (!searchInput || !searchResults) return;
 
   searchInput.addEventListener("input", () => {
-
     const termo = searchInput.value.toLowerCase().trim();
 
     if (!termo) {
@@ -407,368 +311,116 @@ if (searchInput && searchResults) {
       return;
     }
 
-    const encontrados = jogos.filter(jogo =>
-      jogo.title.toLowerCase().includes(termo)
+    if (typeof jogos === "undefined") return;
+
+    const encontrados = jogos.filter(j =>
+      j.title.toLowerCase().includes(termo)
     );
 
     searchResults.style.display = "block";
 
     if (encontrados.length === 0) {
       searchResults.innerHTML = `
-        <div class="search-item">
-          Nenhum jogo encontrado
-        </div>
+        <div class="search-item">Nenhum jogo encontrado</div>
       `;
       return;
     }
 
-    searchResults.innerHTML = encontrados
-  .map((jogo, index) => {
+    // guarda referências sem expor no DOM inline
+    window._tempBusca = encontrados;
 
-    window.tempJogo = window.tempJogo || [];
-    window.tempJogo[index] = jogo;
-
-    return `
-      <div class="search-item" onclick="abrirJogo(window.tempJogo[${index}])">
-
-        <img src="${jogo.thumbnail}">
-
+    searchResults.innerHTML = encontrados.map((jogo, i) => `
+      <div class="search-item" data-busca-idx="${i}">
+        <img src="${jogo.thumbnail}" alt="${jogo.title}">
         <div class="search-info">
           <h4>${jogo.title}</h4>
           <span>R$ ${jogo.price}</span>
         </div>
-
       </div>
-    `;
-  })
-  .join("");
+    `).join("");
 
+    // Delegação de evento nos resultados
+    searchResults.querySelectorAll(".search-item[data-busca-idx]").forEach(el => {
+      el.addEventListener("click", () => {
+        const idx = parseInt(el.dataset.buscaIdx, 10);
+        abrirJogo(window._tempBusca[idx]);
+      });
+    });
   });
 
+  // fechar ao clicar fora
+  document.addEventListener("click", (e) => {
+    if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+      searchResults.style.display = "none";
+    }
+  });
 }
 
-document.addEventListener("click", (e) => {
+/* ── Contador regressivo ─────────────────── */
 
-  if (
-    !searchInput.contains(e.target) &&
-    !searchResults.contains(e.target)
-  ) {
-    searchResults.style.display = "none";
-  }
+function iniciarContagem() {
+  const countdowns = document.querySelectorAll(".countdown");
+  if (!countdowns.length) return;
 
-});
+  const dataFinal = Date.now() + 7 * 24 * 60 * 60 * 1000;
 
-window.addEventListener("DOMContentLoaded", () => {
-  carregarJogos();
-  carregarApiGames();
-  carregarHero();
-  carregarFavoritos();
-  carregarFavoritosMenu();
+  setInterval(() => {
+    const diff = dataFinal - Date.now();
+    if (diff <= 0) { countdowns.forEach(el => el.textContent = "Encerrado"); return; }
 
-  atualizarAuthUI();
-});
+    const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const s = Math.floor((diff % (1000 * 60)) / 1000);
 
-async function mostrarUsuario() {
-  const { data } = await getSupabase().auth.getUser();
+    countdowns.forEach(el => {
+      el.textContent = `${d}d ${h}h ${m}m ${s}s`;
+    });
+  }, 1000);
+}
 
-  if (data?.user) {
-    console.log("Logado como:", data.user.email);
+/* ── Auth UI ─────────────────────────────── */
+
+async function atualizarAuth() {
+  const sb = getSupabase();
+  if (!sb) return;
+
+  const { data: { user } } = await sb.auth.getUser();
+
+  const loginBtn  = document.querySelector(".login");
+  const userBox   = document.getElementById("userBox");
+  const userEmail = document.getElementById("userEmail");
+
+  if (!loginBtn) return;
+
+  if (user) {
+    loginBtn.style.display = "none";
+    if (userBox)   userBox.style.display = "flex";
+    if (userEmail) userEmail.textContent = user.email;
+  } else {
+    loginBtn.style.display = "block";
+    if (userBox) userBox.style.display = "none";
   }
 }
 
 async function logout() {
-  await getSupabase().auth.signOut();
+  const sb = getSupabase();
+  await sb.auth.signOut();
   window.location.href = "login.html";
 }
 
-async function protegerPagina() {
-  const supabase = window.supabaseClient;
-  if (!supabase) return;
-
-  const { data, error } = await supabase.auth.getSession();
-
-  if (!data?.session) return; // 👈 NÃO REDIRECIONA MAIS AUTOMATICAMENTE
-}
-
-async function verificarLogin() {
-  const { data: { user } } = await getSupabase().auth.getUser();
-
-  const logoutBtn = document.getElementById("logoutBtn");
-
-  if (logoutBtn) {
-    logoutBtn.style.display = user ? "block" : "none";
-  }
-}
-
-const logoutBtn = document.getElementById("logoutBtn");
-
-if (logoutBtn) {
-  logoutBtn.addEventListener("click", async () => {
-    await getSupabase().auth.signOut();
-    window.location.reload();
-  });
-}
-
-
-async function atualizarUIUsuario() {
-  const supabase = window.supabaseClient;
-
-  if (!supabase) return; // 🔥 evita crash
-
-  const { data: { user } } = await supabase.auth.getUser();
-
-  const logoutBtn = document.getElementById("logoutBtn");
-  const loginBtn = document.querySelector(".login");
-
-  if (!logoutBtn || !loginBtn) return;
-
-  if (user) {
-    logoutBtn.style.display = "block";
-    loginBtn.style.display = "none";
-  } else {
-    logoutBtn.style.display = "none";
-    loginBtn.style.display = "block";
-  }
-}
-window.addEventListener("DOMContentLoaded", async () => {
-
-  atualizarCarrinho();
-  carregarJogos();
-  carregarApiGames();
-  carregarHero();
-  carregarFavoritos();
-
-  const supabase = window.supabaseClient;
-  if (!supabase) return;
-
-  await protegerPagina();
-  await verificarLogin();
-  await atualizarUIUsuario();
-});
-
-async function atualizarAuthUI() {
-  const supabase = getSupabase();
-
-  if (!supabase) return; // 🔥 EVITA QUEBRAR TUDO
-
-  const { data: { user } } = await supabase.auth.getUser();
-
-  const logoutBtn = document.getElementById("logoutBtn");
-  const loginBtn = document.querySelector(".login");
-
-  if (!logoutBtn || !loginBtn) return;
-
-  if (user) {
-    logoutBtn.style.display = "block";
-    loginBtn.style.display = "none";
-  } else {
-    logoutBtn.style.display = "none";
-    loginBtn.style.display = "block";
-  }
-}
-
-window.addEventListener("DOMContentLoaded", async () => {
-  const supabase = window.supabaseClient;
-  if (!supabase) return;
-
-  const { data: { user } } = await supabase.auth.getUser();
-
-  const logoutBtn = document.getElementById("logoutBtn");
-  const loginBtn = document.querySelector(".login");
-
-  if (!logoutBtn || !loginBtn) return;
-
-  if (user) {
-    logoutBtn.style.display = "block";
-    loginBtn.style.display = "none";
-  } else {
-    logoutBtn.style.display = "none";
-    loginBtn.style.display = "block";
-  }
-});
-
-function atualizarAuth() {
-  const supabase = window.supabaseClient;
-  if (!supabase) return;
-
-  supabase.auth.getUser().then(({ data: { user } }) => {
-    const logoutBtn = document.getElementById("logoutBtn");
-    const loginBtn = document.querySelector(".login");
-
-    if (!logoutBtn || !loginBtn) return;
-
-    if (user) {
-      logoutBtn.style.display = "block";
-      loginBtn.style.display = "none";
-    } else {
-      logoutBtn.style.display = "none";
-      loginBtn.style.display = "block";
-    }
-  });
-}
-
-// 🔥 ISSO É O QUE ESTAVA FALTANDO
-window.addEventListener("DOMContentLoaded", () => {
-  atualizarAuth();
-
-  window.supabaseClient.auth.onAuthStateChange(() => {
-    atualizarAuth();
-  });
-});
-
-async function carregarFavoritos() {
-
-  const {
-    data: { user }
-  } = await window.supabaseClient.auth.getUser();
-
-  if (!user) return;
-
-  const { data } = await window.supabaseClient
-    .from("favoritos")
-    .select("*")
-    .eq("user_id", user.id);
-
-  const favoritos = data.map(f => f.jogo);
-
-  document.querySelectorAll(".card").forEach(card => {
-
-    const nome =
-      card.querySelector(".game-title")?.innerText;
-
-    const fav =
-      card.querySelector(".fav");
-
-    if (
-      favoritos.includes(nome)
-      && fav
-    ) {
-      fav.classList.add("ativo");
-    }
-  });
-
-}
-
-async function carregarFavoritosMenu() {
-  const menu = document.getElementById("favoritosMenu");
-
-  if (!menu) return;
-
-  const {
-    data: { user }
-  } = await window.supabaseClient.auth.getUser();
-
-  if (!user) {
-    menu.innerHTML = "<span>Faça login</span>";
-    return;
-  }
-
-  const { data, error } = await window.supabaseClient
-    .from("favoritos")
-    .select("jogo")
-    .eq("user_id", user.id);
-
-  if (error) {
-    console.error(error);
-    return;
-  }
-
-  if (!data || data.length === 0) {
-    menu.innerHTML = "<span>Nenhum favorito</span>";
-    return;
-  }
-
-  menu.innerHTML = data
-    .map(item => `<a href="#">${item.jogo}</a>`)
-    .join("");
-}
-carregarFavoritosMenu();
-
-function iniciarContagem() {
-
-  const countdowns =
-    document.querySelectorAll(".countdown");
-
-  const dataFinal =
-    new Date().getTime() + (7 * 24 * 60 * 60 * 1000);
-
-  setInterval(() => {
-
-    const agora = new Date().getTime();
-
-    const distancia = dataFinal - agora;
-
-    const dias =
-      Math.floor(distancia / (1000 * 60 * 60 * 24));
-
-    const horas =
-      Math.floor(
-        (distancia % (1000 * 60 * 60 * 24))
-        / (1000 * 60 * 60)
-      );
-
-    const minutos =
-      Math.floor(
-        (distancia % (1000 * 60 * 60))
-        / (1000 * 60)
-      );
-
-    const segundos =
-      Math.floor(
-        (distancia % (1000 * 60))
-        / 1000
-      );
-
-    countdowns.forEach(el => {
-      el.innerText =
-        `${dias}d ${horas}h ${minutos}m ${segundos}s`;
-    });
-
-  }, 1000);
-}
-
-window.addEventListener(
-  "DOMContentLoaded",
-  iniciarContagem
-);
-function toggleSidebar() {
-  const sidebar = document.getElementById("sidebar");
-  const overlay = document.getElementById("overlay");
-
-  if (!sidebar || !overlay) return;
-
-  sidebar.classList.toggle("open");
-  overlay.classList.toggle("show");
-} 
-
-window.adicionarCarrinho = async function (jogo) {
-
-  const { data: { user } } =
-    await window.supabaseClient.auth.getUser();
-
-  if (!user) {
-    alert("Faça login primeiro");
-    return;
-  }
-
-  if (!jogo) {
-    jogo = JSON.parse(localStorage.getItem("jogoSelecionado"));
-  }
-
-  if (!jogo) return;
-
-  await window.supabaseClient.from("carrinho").insert([
-    {
-      user_id: user.id,
-      title: jogo.title,
-      price: jogo.price,
-      thumbnail: jogo.thumbnail
-    }
-  ]);
-
-  // 🔥 FORÇA atualização imediata da UI
-  await carregarCarrinhoUI();
+/* ── Navegação ───────────────────────────── */
+
+window.abrirJogo = function (jogo) {
+  localStorage.setItem("jogoSelecionado", JSON.stringify(jogo));
+  window.location.href = "detalhes.html";
 };
+
+window.irParaCheckout = function () {
+  window.location.href = "checkout.html";
+};
+
+/* ── Chat flutuante ──────────────────────── */
 
 window.abrirChat = function () {
   const chat = document.getElementById("chatBox");
@@ -779,43 +431,89 @@ window.fecharChat = function () {
   const chat = document.getElementById("chatBox");
   if (chat) chat.style.display = "none";
 };
-async function carregarCarrinhoUI() {
 
-  const { data: { user } } =
-    await window.supabaseClient.auth.getUser();
+/* ── Delegação de eventos globais ────────── */
 
-  if (!user) return;
-
-  const { data } = await window.supabaseClient
-    .from("carrinho")
-    .select("*")
-    .eq("user_id", user.id);
-
-  const container = document.querySelector(".cart-content");
-
-  if (!container) return;
-
-  if (!data || data.length === 0) {
-    container.innerHTML = `<p class="empty">Carrinho vazio</p>`;
+document.addEventListener("click", (e) => {
+  // Carrinho — cards "Mais Vendidos" (sem data-jogo vinculado)
+  const cartEl = e.target.closest(".actions-vendido .cart");
+  if (cartEl) {
+    e.stopPropagation();
+    const card  = cartEl.closest(".vendido-card");
+    if (!card) return;
+    const jogo = {
+      title:     card.querySelector("h3")?.textContent   || "Jogo",
+      price:     card.querySelector(".new-price")?.textContent.replace(/[^0-9,.]/g, "").replace(",", ".") || "0",
+      thumbnail: card.querySelector("img")?.src || ""
+    };
+    adicionarCarrinho(jogo);
     return;
   }
-document.getElementById("cartCount").innerText = data.length;
-  container.innerHTML = data.map(item => `
-    <div class="cart-item">
-      <img src="${item.thumbnail}" width="40">
-      <div>
-        <p>${item.title}</p>
-        <small>R$ ${item.price}</small>
-      </div>
-    </div>
-  `).join("");
+
+  // Favorito — cards "Mais Vendidos"
+  const favEl = e.target.closest(".actions-vendido .fav");
+  if (favEl) {
+    e.stopPropagation();
+    const card = favEl.closest(".vendido-card");
+    const nome = card?.querySelector("h3")?.textContent || "Jogo";
+    favoritar(e, nome, favEl);
+  }
+});
+
+/* ── Dropdown do carrinho ────────────────── */
+
+function inicializarCartDropdown() {
+  const cartHeader   = document.getElementById("cartHeader");
+  const cartDropdown = document.getElementById("cartDropdown");
+  if (!cartHeader || !cartDropdown) return;
+
+  cartHeader.addEventListener("click", (e) => {
+    // Evita fechar ao clicar em botões internos
+    if (e.target.closest(".remove-item") || e.target.closest(".finish-btn")) return;
+    cartDropdown.classList.toggle("active");
+  });
+
+  // fechar ao clicar fora
+  document.addEventListener("click", (e) => {
+    if (!cartHeader.contains(e.target)) {
+      cartDropdown.classList.remove("active");
+    }
+  });
 }
 
-window.irParaCheckout = function () {
-  window.location.href = "checkout.html";
-};
+/* ── Init ────────────────────────────────── */
 
-window.abrirJogo = function (jogo) {
-  localStorage.setItem("jogoSelecionado", JSON.stringify(jogo));
-  window.location.href = "detalhes.html";
-};
+window.addEventListener("DOMContentLoaded", async () => {
+  const sb = getSupabase();
+  if (!sb) {
+    console.error("supabaseClient não encontrado. Verifique supabaseClient.js.");
+    return;
+  }
+
+  // UI que não depende de auth
+  carregarHero();
+  carregarJogos();
+  carregarApiGames();
+  inicializarBusca();
+  iniciarContagem();
+  inicializarCartDropdown();
+
+  // UI que depende de auth
+  await atualizarAuth();
+  await atualizarCarrinho();
+  await carregarFavoritos();
+  await carregarFavoritosMenu();
+
+  // Reagir a mudanças de sessão (login/logout em outra aba etc.)
+  sb.auth.onAuthStateChange(async (_event, _session) => {
+    await atualizarAuth();
+    await atualizarCarrinho();
+    await carregarFavoritos();
+    await carregarFavoritosMenu();
+  });
+});
+
+/* ── Expõe funções usadas inline no HTML ─── */
+window.removerItem    = removerItem;
+window.toggleSidebar  = toggleSidebar;
+window.adicionarCarrinho = adicionarCarrinho;
