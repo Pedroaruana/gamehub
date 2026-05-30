@@ -1080,58 +1080,40 @@ body {
   display: block;
 }
 
-/* SUBMENU DA SIDEBAR — accordion interno */
+/* SUBMENU DA SIDEBAR */
 .item-wrapper {
   position: relative;
 }
 
-/* Seta indicadora no item */
-.item::after {
-  content: "›";
-  float: right;
-  transition: transform 0.25s ease;
-  opacity: 0.5;
-}
-
-.item-wrapper.open .item::after {
-  transform: rotate(90deg);
-  opacity: 1;
-}
-
-/* Submenu fechado por padrão */
 .item-wrapper .submenu {
-  position: static;          /* fica dentro do fluxo da sidebar */
-  background: rgba(0, 0, 0, 0.25);
-  border-left: 2px solid rgba(0, 255, 156, 0.35);
-  margin: 2px 0 6px 12px;
-  border-radius: 0 6px 6px 0;
-  padding: 4px 0;
-
-  /* animação de abertura */
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.3s ease, padding 0.2s;
+  position: absolute;
+  top: 0;
+  left: 100%;
+  background: #0a1f4d;
+  width: 200px;
+  padding: 10px;
+  border-radius: 6px;
+  display: none;
+  z-index: 99999;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
 }
 
-/* Aberto via JS (.open no item-wrapper) */
-.item-wrapper.open .submenu {
-  max-height: 300px;         /* valor alto o suficiente */
-  padding: 6px 0;
+.item-wrapper:hover .submenu {
+  display: block;
 }
 
 .submenu a,
 .submenu span {
   display: block;
-  padding: 7px 14px;
-  color: #aec4ff;
+  padding: 8px;
+  color: white;
   text-decoration: none;
-  font-size: 13px;
-  transition: color 0.2s, background 0.2s;
+  font-size: 14px;
 }
 
 .submenu a:hover {
-  color: #fff;
-  background: rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
 }
 
 /* ===========================
