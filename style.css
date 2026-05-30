@@ -1020,7 +1020,7 @@ body {
   z-index: 3000;
   padding: 15px;
   overflow-y: auto;
-  overflow-x: visible;
+  overflow-x: clip;
 }
 
 .sidebar.open {
