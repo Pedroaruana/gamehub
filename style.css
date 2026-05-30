@@ -1019,8 +1019,7 @@ body {
   transition: transform 0.3s ease;
   z-index: 3000;
   padding: 15px;
-  overflow-y: auto;
-  overflow-x: clip;
+  overflow: visible;
 }
 
 .sidebar.open {
@@ -1086,8 +1085,9 @@ body {
 }
 
 .item-wrapper .submenu {
- position: fixed;
-  left: 280px;
+ position: absolute;
+  top: 0;
+  left: 100%;
   background: #0a1f4d;
   width: 200px;
   padding: 10px;
@@ -1097,7 +1097,9 @@ body {
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
 }
 
-
+.item-wrapper:hover .submenu {
+  display: block;
+}
 .submenu a,
 .submenu span {
   display: block;
