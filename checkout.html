@@ -796,46 +796,41 @@ function atualizarBotao() {
  
 // ── FINALIZAR COMPRA (lógica original preservada) ─────────────────────────────
 document.getElementById("btnPay").addEventListener("click", async () => {
- 
   const payment = document.querySelector('input[name="payment"]:checked');
- 
   if (!payment) { alert("Selecione uma forma de pagamento"); return; }
- 
+
+  const btn = document.getElementById("btnPay");
+  btn.disabled = true;
+  btn.textContent = "⏳ Processando...";
+
   const { data: { user } } = await sb.auth.getUser();
- 
-  if (!user) { alert("Faça login primeiro"); return; }
- 
-  const { data: carrinho } = await sb
-    .from("carrinho")
-    .select("*")
-    .eq("user_id", user.id);
- 
-  if (!carrinho || carrinho.length === 0) { alert("Carrinho vazio"); return; }
- 
-  let total = 0;
-  carrinho.forEach(i => total += Number(i.price));
- 
-  const response = await fetch("https://gamehub-sl9h.onrender.com/checkout", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      user_id: user.id,
-      metodo_pagamento: payment.value,
-      itens: carrinho
-    })
-  });
- 
-  const result = await response.json();
- 
-  if (!result.success) { alert("Erro no checkout"); return; }
- 
-  const pedidoId = result.pedido_id;
- 
-  await sb.from("carrinho").delete().eq("user_id", user.id);
- 
-  alert("Compra realizada com sucesso!");
- 
-  window.location.href = `sucesso.html?pedido=${pedidoId}`;
+  if (!user) { alert("Faça login primeiro"); btn.disabled = false; return; }
+
+  const { data: carrinho } = await sb.from("carrinho").select("*").eq("user_id", user.id);
+  if (!carrinho || carrinho.length === 0) { alert("Carrinho vazio"); btn.disabled = false; return; }
+
+  try {
+    const response = await fetch("https://gamehub-sl9h.onrender.com/checkout", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        user_id: user.id,
+        metodo_pagamento: payment.value,
+        itens: carrinho
+      })
+    });
+
+    const result = await response.json();
+    if (!result.success) { alert("Erro no checkout"); btn.disabled = false; btn.textContent = "⚡ Finalizar Compra"; return; }
+
+    await sb.from("carrinho").delete().eq("user_id", user.id);
+    window.location.href = `sucesso.html?pedido=${result.pedido_id}`;
+
+  } catch (e) {
+    alert("Erro de conexão. Tente novamente.");
+    btn.disabled = false;
+    btn.textContent = "⚡ Finalizar Compra";
+  }
 });
 </script>
  
