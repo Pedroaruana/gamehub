@@ -497,6 +497,7 @@ window.addEventListener("DOMContentLoaded", async () => {
   inicializarBusca();
   iniciarContagem();
   inicializarCartDropdown();
+  inicializarSidebarAccordion();
 
   // UI que depende de auth
   await atualizarAuth();
@@ -513,7 +514,27 @@ window.addEventListener("DOMContentLoaded", async () => {
   });
 });
 
+/* ── Accordion da sidebar ─────────────────── */
+
+function inicializarSidebarAccordion() {
+  document.querySelectorAll(".item-wrapper .item").forEach(item => {
+    item.addEventListener("click", (e) => {
+      e.preventDefault();
+      const wrapper = item.closest(".item-wrapper");
+      const isOpen  = wrapper.classList.contains("open");
+
+      // fecha todos
+      document.querySelectorAll(".item-wrapper.open").forEach(w => {
+        if (w !== wrapper) w.classList.remove("open");
+      });
+
+      // toggle o clicado
+      wrapper.classList.toggle("open", !isOpen);
+    });
+  });
+}
+
 /* ── Expõe funções usadas inline no HTML ─── */
-window.removerItem    = removerItem;
-window.toggleSidebar  = toggleSidebar;
+window.removerItem       = removerItem;
+window.toggleSidebar     = toggleSidebar;
 window.adicionarCarrinho = adicionarCarrinho;
