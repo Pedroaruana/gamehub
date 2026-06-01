@@ -153,11 +153,28 @@
 
     <!-- MEUS PEDIDOS -->
     <div class="orders-header" id="ordersHeader">
-      📋
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+        <polyline points="14 2 14 8 20 8"/>
+        <line x1="16" y1="13" x2="8" y2="13"/>
+        <line x1="16" y1="17" x2="8" y2="17"/>
+        <line x1="10" y1="9" x2="8" y2="9"/>
+      </svg>
       <div class="orders-dropdown" id="ordersDropdown">
-        <div class="orders-top-title">📋 Meus Pedidos</div>
+        <div class="orders-top-title">
+          <div class="orders-title-left">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <line x1="16" y1="13" x2="8" y2="13"/>
+              <line x1="16" y1="17" x2="8" y2="17"/>
+            </svg>
+            Meus Pedidos
+          </div>
+          <span class="orders-count-badge" id="ordersCountBadge"></span>
+        </div>
         <div class="orders-content" id="ordersContent">
-          <p style="color:#aaa;text-align:center;padding:20px 0;font-size:13px">Carregando...</p>
+          <p style="color:#64748b;text-align:center;padding:24px 0;font-size:13px">Carregando...</p>
         </div>
       </div>
     </div>

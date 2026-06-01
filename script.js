@@ -488,14 +488,15 @@ document.addEventListener("click", (e) => {
 /* ── Meus Pedidos ────────────────────────── */
 
 async function carregarPedidos() {
-  const container = document.getElementById("ordersContent");
+  const container  = document.getElementById("ordersContent");
+  const countBadge = document.getElementById("ordersCountBadge");
   if (!container) return;
 
   const sb = getSupabase();
   const { data: { user } } = await sb.auth.getUser();
 
   if (!user) {
-    container.innerHTML = "<p style='color:#aaa;text-align:center;padding:20px 0;font-size:13px'>Faça login para ver seus pedidos</p>";
+    container.innerHTML = "<p style='color:#475569;text-align:center;padding:24px 0;font-size:13px'>Faça login para ver seus pedidos</p>";
     return;
   }
 
@@ -506,27 +507,37 @@ async function carregarPedidos() {
     .order("created_at", { ascending: false });
 
   if (error || !pedidos || pedidos.length === 0) {
-    container.innerHTML = "<p style='color:#aaa;text-align:center;padding:20px 0;font-size:13px'>Nenhum pedido encontrado</p>";
+    container.innerHTML = "<p style='color:#475569;text-align:center;padding:24px 0;font-size:13px'>Nenhum pedido encontrado</p>";
     return;
   }
+
+  if (countBadge) countBadge.textContent = pedidos.length + (pedidos.length === 1 ? " pedido" : " pedidos");
 
   const metodoLabel = {
     pix: "Pix", boleto: "Boleto", paypal: "PayPal",
     applepay: "Apple Pay", binance: "Binance Pay",
-    cartao_parcelado: "Cartão Parcelado"
+    cartao_parcelado: "Cartão Parcelado",
+    cartao_avista_visa: "Visa", cartao_avista_master: "Mastercard",
+    cartao_avista_elo: "Elo", cartao_avista_amex: "Amex"
   };
 
   container.innerHTML = pedidos.map(p => {
     const status  = p.status || "pendente";
-    const metodo  = metodoLabel[p.metodo_pagamento] || (p.metodo_pagamento || "—").replace(/_/g," ");
+    const metodo  = metodoLabel[p.metodo_pagamento] || (p.metodo_pagamento || "—").replace(/_/g, " ");
     const total   = "R$ " + Number(p.total).toFixed(2).replace(".", ",");
     const idCurto = String(p.id).slice(0, 8).toUpperCase();
+    const data    = p.created_at
+      ? new Date(p.created_at).toLocaleDateString("pt-BR", { day:"2-digit", month:"short", year:"numeric" })
+      : "";
     return `
-      <div class="order-card">
+      <div class="order-card ${status}">
         <div class="order-card-left">
           <span class="order-card-id">#${idCurto}</span>
           <span class="order-card-total">${total}</span>
-          <span class="order-card-method">${metodo}</span>
+          <div class="order-card-meta">
+            <span>${metodo}</span>
+            ${data ? `<span>${data}</span>` : ""}
+          </div>
         </div>
         <span class="order-card-status ${status}">${status}</span>
       </div>
