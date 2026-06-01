@@ -485,6 +485,76 @@ document.addEventListener("click", (e) => {
   }
 });
 
+/* ── Meus Pedidos ────────────────────────── */
+
+async function carregarPedidos() {
+  const container = document.getElementById("ordersContent");
+  if (!container) return;
+
+  const sb = getSupabase();
+  const { data: { user } } = await sb.auth.getUser();
+
+  if (!user) {
+    container.innerHTML = "<p style='color:#aaa;text-align:center;padding:20px 0;font-size:13px'>Faça login para ver seus pedidos</p>";
+    return;
+  }
+
+  const { data: pedidos, error } = await sb
+    .from("pedidos")
+    .select("*")
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false });
+
+  if (error || !pedidos || pedidos.length === 0) {
+    container.innerHTML = "<p style='color:#aaa;text-align:center;padding:20px 0;font-size:13px'>Nenhum pedido encontrado</p>";
+    return;
+  }
+
+  const metodoLabel = {
+    pix: "Pix", boleto: "Boleto", paypal: "PayPal",
+    applepay: "Apple Pay", binance: "Binance Pay",
+    cartao_parcelado: "Cartão Parcelado"
+  };
+
+  container.innerHTML = pedidos.map(p => {
+    const status  = p.status || "pendente";
+    const metodo  = metodoLabel[p.metodo_pagamento] || (p.metodo_pagamento || "—").replace(/_/g," ");
+    const total   = "R$ " + Number(p.total).toFixed(2).replace(".", ",");
+    const idCurto = String(p.id).slice(0, 8).toUpperCase();
+    return `
+      <div class="order-card">
+        <div class="order-card-left">
+          <span class="order-card-id">#${idCurto}</span>
+          <span class="order-card-total">${total}</span>
+          <span class="order-card-method">${metodo}</span>
+        </div>
+        <span class="order-card-status ${status}">${status}</span>
+      </div>
+    `;
+  }).join("");
+}
+
+function inicializarOrdersDropdown() {
+  const ordersHeader   = document.getElementById("ordersHeader");
+  const ordersDropdown = document.getElementById("ordersDropdown");
+  if (!ordersHeader || !ordersDropdown) return;
+
+  ordersHeader.addEventListener("click", async (e) => {
+    ordersDropdown.classList.toggle("active");
+    if (ordersDropdown.classList.contains("active")) await carregarPedidos();
+  });
+
+  document.addEventListener("click", (e) => {
+    if (!ordersHeader.contains(e.target)) ordersDropdown.classList.remove("active");
+  });
+
+  // Auto-abre se vier de sucesso.html?pedidos=1
+  if (new URLSearchParams(window.location.search).get("pedidos") === "1") {
+    ordersDropdown.classList.add("active");
+    carregarPedidos();
+  }
+}
+
 /* ── Dropdown do carrinho ────────────────── */
 
 function inicializarCartDropdown() {
@@ -522,6 +592,7 @@ window.addEventListener("DOMContentLoaded", async () => {
   inicializarBusca();
   iniciarContagem();
   inicializarCartDropdown();
+  inicializarOrdersDropdown();
 
   // UI que depende de auth
   await atualizarAuth();
