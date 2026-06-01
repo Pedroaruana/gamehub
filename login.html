@@ -7,15 +7,19 @@
 <link rel="stylesheet" href="login.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabaseClient.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js"></script>
 </head>
 
 <body>
 
 <!-- LADO ESQUERDO -->
-<div class="login-visual">
-  <div class="visual-grid"></div>
+<div class="login-visual" style="position:relative;overflow:hidden;">
+  <canvas id="canvas3d" style="position:absolute;inset:0;width:100%;height:100%;display:block;"></canvas>
 
-  <div class="visual-content">
+  <!-- gradiente para o texto ficar legível -->
+  <div style="position:absolute;inset:0;background:linear-gradient(to right,rgba(5,8,20,0.45) 0%,transparent 100%);pointer-events:none;z-index:1;"></div>
+
+  <div class="visual-content" style="position:relative;z-index:2;">
     <div class="visual-badge">🎮 Sua loja de jogos digital</div>
 
     <h1 class="visual-title">
@@ -99,6 +103,289 @@
 </div>
 
 <script src="login.js"></script>
+
+<script>
+(function () {
+  const canvas    = document.getElementById('canvas3d');
+  const container = canvas.parentElement;
+  const W = () => container.offsetWidth;
+  const H = () => container.offsetHeight;
+
+  /* ── Renderer ─────────────────────────────────────────── */
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer.setSize(W(), H());
+
+  const scene  = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(55, W() / H(), 0.1, 1000);
+  camera.position.set(0, 1.5, 6.5);
+  camera.lookAt(0, 0, 0);
+
+  /* ── Iluminação ───────────────────────────────────────── */
+  scene.add(new THREE.AmbientLight(0x111133, 3));
+  const sun = new THREE.DirectionalLight(0xffffff, 2.5);
+  sun.position.set(8, 4, 6);
+  scene.add(sun);
+
+  /* ── Estrelas ─────────────────────────────────────────── */
+  const starArr = new Float32Array(600 * 3);
+  for (let i = 0; i < starArr.length; i++) starArr[i] = (Math.random() - 0.5) * 300;
+  const starGeo = new THREE.BufferGeometry();
+  starGeo.setAttribute('position', new THREE.BufferAttribute(starArr, 3));
+  scene.add(new THREE.Points(starGeo, new THREE.PointsMaterial({
+    color: 0xffffff, size: 0.18, transparent: true, opacity: 0.75
+  })));
+
+  /* ── Terra ────────────────────────────────────────────── */
+  const R = 2;
+  const loader = new THREE.TextureLoader();
+
+  const earthMat = new THREE.MeshPhongMaterial({
+    color:    0x1a4a8a,
+    emissive: 0x050d1f,
+    specular: 0x224488,
+    shininess: 25
+  });
+
+  // Tenta carregar textura real; se falhar fica o azul
+  loader.load(
+    'https://raw.githubusercontent.com/mrdoob/three.js/r134/examples/textures/planets/earth_atmos_2048.jpg',
+    tex => { earthMat.map = tex; earthMat.needsUpdate = true; },
+    undefined,
+    () => loader.load(
+      'https://cdn.jsdelivr.net/gh/mrdoob/three.js@r134/examples/textures/planets/earth_atmos_2048.jpg',
+      tex => { earthMat.map = tex; earthMat.needsUpdate = true; }
+    )
+  );
+
+  const earth = new THREE.Mesh(new THREE.SphereGeometry(R, 64, 64), earthMat);
+  scene.add(earth);
+
+  /* ── Nuvens ───────────────────────────────────────────── */
+  const cloudMat = new THREE.MeshPhongMaterial({
+    color: 0xffffff, transparent: true, opacity: 0, depthWrite: false
+  });
+  loader.load(
+    'https://raw.githubusercontent.com/mrdoob/three.js/r134/examples/textures/planets/earth_clouds_2048.png',
+    tex => { cloudMat.alphaMap = tex; cloudMat.opacity = 0.22; cloudMat.needsUpdate = true; }
+  );
+  const clouds = new THREE.Mesh(new THREE.SphereGeometry(R + 0.04, 64, 64), cloudMat);
+  scene.add(clouds);
+
+  /* ── Atmosfera ────────────────────────────────────────── */
+  const atmMat = new THREE.MeshPhongMaterial({
+    color: 0x2266ff, emissive: 0x0033aa,
+    transparent: true, opacity: 0.10,
+    side: THREE.BackSide, depthWrite: false
+  });
+  scene.add(new THREE.Mesh(new THREE.SphereGeometry(R + 0.25, 32, 32), atmMat));
+
+  /* ── Cidades (lat/lon → vec3 LOCAL) ───────────────────── */
+  function ll(lat, lon, r) {
+    const phi   = (90 - lat) * (Math.PI / 180);
+    const theta = (lon + 180) * (Math.PI / 180);
+    return new THREE.Vector3(
+      -r * Math.sin(phi) * Math.cos(theta),
+       r * Math.cos(phi),
+       r * Math.sin(phi) * Math.sin(theta)
+    );
+  }
+
+  const CITIES = [
+    { lat:  38.9, lon:  -77.0 }, // EUA
+    { lat:  55.7, lon:   37.6 }, // Rússia
+    { lat:  39.9, lon:  116.4 }, // China
+    { lat:  51.5, lon:   -0.1 }, // Reino Unido
+    { lat:  48.8, lon:    2.3 }, // França
+    { lat: -15.8, lon:  -47.9 }, // Brasil
+    { lat:  28.6, lon:   77.2 }, // Índia
+    { lat: -35.3, lon:  149.1 }, // Austrália
+    { lat:  35.7, lon:  139.7 }, // Japão
+    { lat:  52.5, lon:   13.4 }, // Alemanha
+    { lat:  39.0, lon:  125.7 }, // Coreia do Norte
+    { lat:  35.7, lon:   51.4 }, // Irã
+    { lat:  31.8, lon:   35.2 }, // Israel
+    { lat:  33.7, lon:   73.1 }, // Paquistão
+    { lat: -34.6, lon:  -58.4 }, // Argentina
+    { lat:  41.0, lon:   29.0 }, // Turquia
+  ];
+
+  // Pontos vermelhos nas cidades (filhos da Terra — giram com ela)
+  CITIES.forEach(c => {
+    const dot = new THREE.Mesh(
+      new THREE.SphereGeometry(0.022, 8, 8),
+      new THREE.MeshBasicMaterial({ color: 0xff2200 })
+    );
+    dot.position.copy(ll(c.lat, c.lon, R + 0.02));
+    earth.add(dot);
+  });
+
+  /* ── Mísseis e explosões ──────────────────────────────── */
+  const missiles   = [];
+  const explosions = [];
+
+  function worldPos(cityIndex) {
+    // Posição local → espaço mundo considerando rotação da Terra
+    const local = ll(CITIES[cityIndex].lat, CITIES[cityIndex].lon, R);
+    return local.applyEuler(earth.rotation);
+  }
+
+  function launchMissile() {
+    const si = Math.floor(Math.random() * CITIES.length);
+    let   di = Math.floor(Math.random() * CITIES.length);
+    while (di === si) di = Math.floor(Math.random() * CITIES.length);
+
+    const from = worldPos(si);
+    const to   = worldPos(di);
+
+    // Ponto de controle: acima do ponto médio
+    const ctrl = new THREE.Vector3().lerpVectors(from, to, 0.5);
+    const lift  = ctrl.length() * 0.7 + 1.2;
+    ctrl.normalize().multiplyScalar(R + lift);
+
+    const curve = new THREE.QuadraticBezierCurve3(from.clone(), ctrl, to.clone());
+
+    // Ogiva
+    const head = new THREE.Mesh(
+      new THREE.SphereGeometry(0.038, 8, 8),
+      new THREE.MeshBasicMaterial({ color: 0xff5500 })
+    );
+    scene.add(head);
+
+    missiles.push({
+      curve, head,
+      history: [],
+      trail: null,
+      t: 0,
+      speed: 0.0045 + Math.random() * 0.003
+    });
+  }
+
+  function boom(pos) {
+    // Esfera de fogo
+    const fire = new THREE.Mesh(
+      new THREE.SphereGeometry(0.06, 16, 16),
+      new THREE.MeshBasicMaterial({ color: 0xff9900, transparent: true, opacity: 1 })
+    );
+    fire.position.copy(pos);
+    scene.add(fire);
+    explosions.push({ mesh: fire, age: 0, maxAge: 45, type: 'fire' });
+
+    // Flash branco interno
+    const flash = new THREE.Mesh(
+      new THREE.SphereGeometry(0.03, 8, 8),
+      new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 1 })
+    );
+    flash.position.copy(pos);
+    scene.add(flash);
+    explosions.push({ mesh: flash, age: 0, maxAge: 18, type: 'flash' });
+
+    // Anel de choque
+    const ring = new THREE.Mesh(
+      new THREE.TorusGeometry(0.06, 0.012, 8, 32),
+      new THREE.MeshBasicMaterial({ color: 0xff6600, transparent: true, opacity: 0.9 })
+    );
+    ring.position.copy(pos);
+    // Orienta o anel na direção radial
+    ring.lookAt(0, 0, 0);
+    scene.add(ring);
+    explosions.push({ mesh: ring, age: 0, maxAge: 35, type: 'ring' });
+  }
+
+  /* ── Loop principal ───────────────────────────────────── */
+  let time = 0, spawnClock = 0;
+
+  function animate() {
+    requestAnimationFrame(animate);
+    time += 0.006;
+    spawnClock++;
+
+    // Terra e nuvens giram
+    earth.rotation.y  += 0.0012;
+    clouds.rotation.y += 0.0014;
+
+    // Lança míssil a cada ~100 frames (≈ 1.6s a 60fps)
+    if (spawnClock >= 100) {
+      launchMissile();
+      spawnClock = Math.floor(Math.random() * 20);
+    }
+
+    // Atualiza mísseis
+    for (let i = missiles.length - 1; i >= 0; i--) {
+      const m = missiles[i];
+      m.t += m.speed;
+
+      if (m.t >= 1) {
+        boom(m.curve.getPoint(1));
+        scene.remove(m.head);
+        if (m.trail) scene.remove(m.trail);
+        missiles.splice(i, 1);
+        continue;
+      }
+
+      const pos = m.curve.getPoint(m.t);
+      m.head.position.copy(pos);
+
+      // Histórico para o rastro
+      m.history.unshift(pos.clone());
+      if (m.history.length > 18) m.history.pop();
+
+      // Rebuild trail
+      if (m.history.length > 1) {
+        if (m.trail) scene.remove(m.trail);
+        const tGeo = new THREE.BufferGeometry().setFromPoints(m.history);
+        m.trail = new THREE.Line(tGeo, new THREE.LineBasicMaterial({
+          color: 0xff6600, transparent: true, opacity: 0.55
+        }));
+        scene.add(m.trail);
+      }
+    }
+
+    // Atualiza explosões
+    for (let i = explosions.length - 1; i >= 0; i--) {
+      const e = explosions[i];
+      e.age++;
+      const p = e.age / e.maxAge;
+
+      if (e.type === 'fire') {
+        e.mesh.scale.setScalar(1 + p * 6);
+        e.mesh.material.opacity = 1 - p;
+      } else if (e.type === 'flash') {
+        e.mesh.scale.setScalar(1 + p * 3);
+        e.mesh.material.opacity = 1 - p;
+      } else if (e.type === 'ring') {
+        e.mesh.scale.setScalar(1 + p * 10);
+        e.mesh.material.opacity = (1 - p) * 0.7;
+      }
+
+      if (e.age >= e.maxAge) {
+        scene.remove(e.mesh);
+        explosions.splice(i, 1);
+      }
+    }
+
+    // Câmera orbita lentamente
+    camera.position.x = Math.sin(time * 0.08) * 6.5;
+    camera.position.z = Math.cos(time * 0.08) * 6.5;
+    camera.position.y = 1.5 + Math.sin(time * 0.04) * 0.8;
+    camera.lookAt(0, 0, 0);
+
+    renderer.render(scene, camera);
+  }
+
+  animate();
+
+  // Lança alguns mísseis de início para não ficar vazio
+  for (let i = 0; i < 4; i++) setTimeout(launchMissile, i * 400);
+
+  /* ── Resize ───────────────────────────────────────────── */
+  window.addEventListener('resize', () => {
+    camera.aspect = W() / H();
+    camera.updateProjectionMatrix();
+    renderer.setSize(W(), H());
+  });
+})();
+</script>
 
 </body>
 </html>
