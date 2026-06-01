@@ -57,7 +57,8 @@ window.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      alert("Conta criada! Agora faça login.");
+      const successScreen = document.getElementById("successScreen");
+      if (successScreen) successScreen.style.display = "flex";
       tabLogin.click();
     }
 
