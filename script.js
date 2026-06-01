@@ -425,7 +425,9 @@ async function logout() {
   } catch (e) {
     console.error("Erro ao fazer logout:", e);
   }
-  window.location.href = "index.html";
+  await atualizarAuth();
+  await atualizarCarrinho();
+  await carregarFavoritosMenu();
 }
 
 window.logout = logout;

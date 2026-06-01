@@ -58,7 +58,11 @@ window.addEventListener("DOMContentLoaded", () => {
         });
 
         if (error) {
-          alert("Erro ao criar conta: " + error.message);
+          if (error.message.includes("rate limit") || error.message.includes("email rate")) {
+            alert("Muitos cadastros em pouco tempo. Aguarde alguns minutos e tente novamente.");
+          } else {
+            alert("Erro ao criar conta: " + error.message);
+          }
           return;
         }
 
