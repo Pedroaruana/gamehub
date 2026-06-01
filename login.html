@@ -3,51 +3,87 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Login - GameHub</title>
-
 <link rel="stylesheet" href="login.css">
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabaseClient.js"></script>
 </head>
 
 <body>
 
-<div class="login-container">
+<!-- LADO ESQUERDO -->
+<div class="login-visual">
+  <div class="visual-grid"></div>
 
-  <div class="logo">🎮 GAMEHUB</div>
+  <div class="visual-content">
+    <div class="visual-badge">🎮 Sua loja de jogos digital</div>
 
-  <div class="login-box">
+    <h1 class="visual-title">
+      A melhor seleção<br>de jogos para <span>você</span>
+    </h1>
 
-    <div class="tabs">
-      <button class="active" id="tabLogin">Entrar</button>
-      <button id="tabCreate">Criar conta</button>
+    <p class="visual-sub">
+      Milhares de títulos com os melhores preços. Acesse sua conta e aproveite ofertas exclusivas, cashback e muito mais.
+    </p>
+
+    <div class="visual-stats">
+      <div class="stat">
+        <span class="stat-value">+500</span>
+        <span class="stat-label">Jogos</span>
+      </div>
+      <div class="stat">
+        <span class="stat-value">50%</span>
+        <span class="stat-label">Off médio</span>
+      </div>
+      <div class="stat">
+        <span class="stat-value">24h</span>
+        <span class="stat-label">Entrega</span>
+      </div>
     </div>
-
-    <input type="email" id="email" placeholder="E-mail" class="input">
-    <input type="password" id="password" placeholder="Senha" class="input">
-
-    <div class="options">
-      <label>
-        <input type="checkbox">
-        Lembrar
-      </label>
-
-      <a href="#">Esqueci minha senha</a>
-    </div>
-
-    <button class="access-btn" id="btnLogin">Acessar</button>
-
-    <div class="divider">Ou conecte-se via</div>
-
-    <div class="socials">
-      <button>Google</button>
-      <button>Steam</button>
-      <button>Discord</button>
-    </div>
-
   </div>
+</div>
+
+<!-- LADO DIREITO (FORMULÁRIO) -->
+<div class="login-panel">
+
+  <div class="panel-logo">🎮 <span>GAME</span>HUB</div>
+
+  <h2 class="panel-heading">Bem-vindo de volta</h2>
+  <p class="panel-sub">Entre na sua conta para continuar</p>
+
+  <div class="tabs">
+    <button class="active" id="tabLogin">Entrar</button>
+    <button id="tabCreate">Criar conta</button>
+  </div>
+
+  <div class="input-group">
+    <label for="email">E-mail</label>
+    <input type="email" id="email" placeholder="seu@email.com" class="input">
+  </div>
+
+  <div class="input-group">
+    <label for="password">Senha</label>
+    <input type="password" id="password" placeholder="••••••••" class="input">
+  </div>
+
+  <div class="options">
+    <label>
+      <input type="checkbox">
+      Lembrar de mim
+    </label>
+    <a href="#">Esqueci minha senha</a>
+  </div>
+
+  <button class="access-btn" id="btnLogin">Acessar conta</button>
+
+  <div class="divider">ou continue com</div>
+
+  <div class="socials">
+    <button>Google</button>
+    <button>Steam</button>
+    <button>Discord</button>
+  </div>
+
 </div>
 
 <script src="login.js"></script>
