@@ -1,6 +1,12 @@
-# 🎮 GameHub - Full Stack Game Store
+# 🎮 GameHub — Full Stack Game Store
 
-GameHub é uma plataforma full stack de e-commerce de jogos digitais, inspirada em plataformas como Steam e Nuuvem. O sistema permite listar jogos, adicionar ao carrinho, finalizar compras e registrar pedidos em um banco de dados real.
+![Vercel](https://img.shields.io/badge/Vercel-deployed-black?logo=vercel&logoColor=white)
+![Python](https://img.shields.io/badge/Python-FastAPI-009688?logo=fastapi&logoColor=white)
+![Supabase](https://img.shields.io/badge/Supabase-database-3ecf8e?logo=supabase&logoColor=white)
+![JavaScript](https://img.shields.io/badge/Frontend-JavaScript-f7df1e?logo=javascript&logoColor=black)
+
+GameHub é uma plataforma full stack de e-commerce de jogos digitais, inspirada em plataformas como Steam e Nuuvem. O sistema permite listar jogos, favoritar, adicionar ao carrinho, finalizar compras, acompanhar pedidos e muito mais — com autenticação real e banco de dados integrado.
+
 
 ---
 
@@ -14,39 +20,53 @@ GameHub é uma plataforma full stack de e-commerce de jogos digitais, inspirada 
 
 ## 🧠 Funcionalidades
 
-### 🛒 E-commerce
-- Listagem de jogos
-- Carrinho de compras
-- Cálculo automático de total
-- Checkout funcional
+### 🔐 Autenticação
+- Cadastro e login com e-mail e senha
+- Sessão persistente via Supabase Auth
+- Logout instantâneo sem recarregar a página
 
-### 💳 Sistema de pedidos
-- Criação de pedidos em tempo real
-- Registro de itens por pedido
-- Status de pedido (pendente)
+### 🛒 E-commerce
+- Listagem de jogos com cards interativos
+- Busca em tempo real por nome
+- Página de detalhes de cada jogo
+- Carrinho de compras com dropdown no header
+- Cálculo automático de total
+- Checkout com múltiplas formas de pagamento
+
+### ❤️ Favoritos
+- Favoritar/desfavoritar jogos
+- Lista de desejos no hero
+- Menu lateral com jogos favoritados
+
+### 📋 Meus Pedidos
+- Dropdown de pedidos no header
+- Exibe valor, método de pagamento, data e status
+- Status colorido: pendente, aprovado, entregue, cancelado
+- Abre automaticamente após finalizar compra
 
 ### ⚙️ Backend API (FastAPI)
-- API REST completa
-- Integração com Supabase
-- Endpoints para pedidos e checkout
+- API REST com endpoint de checkout
+- Registro de pedidos e itens no banco
+- Integração com Supabase PostgreSQL
 
 ---
 
-## 🔥 Tecnologias utilizadas
+## 🔥 Tecnologias
 
 ### Frontend
 - HTML5 / CSS3 / JavaScript
-- Fetch API
+- Three.js (cena 3D na tela de login)
+- Supabase JS SDK
 - Deploy: Vercel
 
 ### Backend
-- Python
-- FastAPI
-- Uvicorn
+- Python 3 + FastAPI + Uvicorn
 - python-dotenv
+- Deploy: Render
 
-### Banco de dados
+### Banco de Dados
 - Supabase (PostgreSQL)
+- Tabelas: `pedidos`, `pedido_itens`, `favoritos`, `carrinho`
 
 ---
 📌 Status do Projeto
