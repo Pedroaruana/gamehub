@@ -385,7 +385,8 @@ async function atualizarAuth() {
   const sb = getSupabase();
   if (!sb) return;
 
-  const { data: { user } } = await sb.auth.getUser();
+  const { data: { session } } = await sb.auth.getSession();
+  const user = session?.user ?? null;
 
   const loginBtn  = document.querySelector(".login");
   const userBox   = document.getElementById("userBox");
