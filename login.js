@@ -1,42 +1,66 @@
 window.addEventListener("DOMContentLoaded", () => {
 
-  const email = document.getElementById("email");
+  const email    = document.getElementById("email");
   const password = document.getElementById("password");
-
   const btnLogin = document.getElementById("btnLogin");
+  const tabLogin  = document.getElementById("tabLogin");
   const tabCreate = document.getElementById("tabCreate");
 
-  // LOGIN
-  btnLogin.addEventListener("click", async () => {
+  let modo = "login"; // "login" ou "cadastro"
 
-    const { error } = await window.supabaseClient.auth.signInWithPassword({
-      email: email.value,
-      password: password.value
-    });
-
-    if (error) {
-      alert("Erro login: " + error.message);
-      return;
-    }
-
-    alert("Login feito!");
-    window.location.href = "index.html";
+  // TROCA DE ABA
+  tabLogin.addEventListener("click", () => {
+    modo = "login";
+    tabLogin.classList.add("active");
+    tabCreate.classList.remove("active");
+    btnLogin.textContent = "Acessar conta";
   });
 
-  // CRIAR CONTA
-  tabCreate.addEventListener("click", async () => {
+  tabCreate.addEventListener("click", () => {
+    modo = "cadastro";
+    tabCreate.classList.add("active");
+    tabLogin.classList.remove("active");
+    btnLogin.textContent = "Criar conta";
+  });
 
-    const { error } = await window.supabaseClient.auth.signUp({
-      email: email.value,
-      password: password.value
-    });
+  // AÇÃO PRINCIPAL
+  btnLogin.addEventListener("click", async () => {
 
-    if (error) {
-      alert("Erro cadastro: " + error.message);
+    if (!email.value || !password.value) {
+      alert("Preencha e-mail e senha.");
       return;
     }
 
-    alert("Conta criada! Agora faça login.");
+    if (modo === "login") {
+
+      const { error } = await window.supabaseClient.auth.signInWithPassword({
+        email: email.value,
+        password: password.value
+      });
+
+      if (error) {
+        alert("Erro no login: " + error.message);
+        return;
+      }
+
+      window.location.href = "index.html";
+
+    } else {
+
+      const { error } = await window.supabaseClient.auth.signUp({
+        email: email.value,
+        password: password.value
+      });
+
+      if (error) {
+        alert("Erro ao criar conta: " + error.message);
+        return;
+      }
+
+      alert("Conta criada! Agora faça login.");
+      tabLogin.click();
+    }
+
   });
 
 });
