@@ -63,6 +63,7 @@ GameHub é uma plataforma full stack de e-commerce de jogos digitais, inspirada 
 - Python 3 + FastAPI + Uvicorn
 - python-dotenv
 - Deploy: Render
+- Uptime monitorado via UptimeRobot (ping a cada 5 min)
 
 ### Banco de Dados
 - Supabase (PostgreSQL)
@@ -75,6 +76,7 @@ GameHub é uma plataforma full stack de e-commerce de jogos digitais, inspirada 
 ✔ API funcionando
 ✔ Banco integrado
 ✔ Checkout operacional
+✔ Uptime monitorado (backend sempre ativo)
 
 ## 📸 Screenshots do projeto
 
