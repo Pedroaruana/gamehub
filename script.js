@@ -391,23 +391,40 @@ async function atualizarAuth() {
   const userBox   = document.getElementById("userBox");
   const userEmail = document.getElementById("userEmail");
 
-  if (!loginBtn) return;
-
   if (user) {
-    loginBtn.style.display = "none";
-    if (userBox)   userBox.style.display = "flex";
-    if (userEmail) userEmail.textContent = user.email;
+    const nome = user.email.split("@")[0];
+
+    if (loginBtn) loginBtn.style.display = "none";
+
+    if (userBox) {
+      userBox.style.display = "flex";
+      if (userEmail) userEmail.textContent = nome;
+    } else if (loginBtn) {
+      // páginas sem #userBox no HTML (ex: detalhes.html)
+      const actions = loginBtn.closest(".actions") || loginBtn.parentElement;
+      actions.insertAdjacentHTML("beforeend", `
+        <div class="user-box" id="userBox" style="display:flex">
+          <span id="userEmail">${nome}</span>
+          <a href="#" id="logoutBtn">Sair</a>
+        </div>
+      `);
+      document.getElementById("logoutBtn")
+        .addEventListener("click", (e) => { e.preventDefault(); logout(); });
+    }
+
   } else {
-    loginBtn.style.display = "block";
-    if (userBox) userBox.style.display = "none";
+    if (loginBtn) loginBtn.style.display = "block";
+    if (userBox)  userBox.style.display  = "none";
   }
 }
 
 async function logout() {
   const sb = getSupabase();
   await sb.auth.signOut();
-  window.location.href = "login.html";
+  window.location.href = "index.html";
 }
+
+window.logout = logout;
 
 /* ── Navegação ───────────────────────────── */
 
