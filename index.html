@@ -150,8 +150,11 @@
       <!-- LOGIN / USER -->
       <button class="login" onclick="window.location.href='login.html'">ENTRAR</button>
       <div class="user-box" id="userBox" style="display:none;">
-        <div id="userEmail"></div>
-        <a href="#" id="logoutBtn" onclick="logout(); return false;">Sair</a>
+        <div class="user-avatar" id="userAvatar"></div>
+        <div class="user-info">
+          <span class="user-name" id="userEmail"></span>
+          <a href="#" id="logoutBtn" onclick="logout(); return false;">Sair</a>
+        </div>
       </div>
     </div>
   </header>
@@ -189,7 +192,7 @@
           release_date: '2026',
           descricao: 'Battlefield 6 coloca os jogadores em combates modernos de larga escala com veículos e destruição avançada.'
         })">▶ GARANTA AGORA</button>
-        <button class="hero-btn-wish">♡ Lista de desejos</button>
+        <button class="hero-btn-wish" id="heroWishBtn" onclick="heroWish(this)">♡ Lista de desejos</button>
       </div>
 
       <div class="hero-trust">
@@ -450,6 +453,32 @@
     function scrollRow(id, amount) {
       const container = document.getElementById(id);
       if (container) container.scrollLeft += amount;
+    }
+
+    async function heroWish(btn) {
+      const sb = window.supabaseClient;
+      const { data: { user } } = await sb.auth.getUser();
+
+      if (!user) {
+        window.location.href = "login.html";
+        return;
+      }
+
+      const ativo = btn.classList.contains("ativo");
+
+      if (ativo) {
+        await sb.from("favoritos").delete().eq("user_id", user.id).eq("jogo", "Battlefield 6");
+        btn.classList.remove("ativo");
+        btn.textContent = "♡ Lista de desejos";
+      } else {
+        await sb.from("favoritos").insert({ user_id: user.id, jogo: "Battlefield 6" });
+        btn.classList.add("ativo");
+        btn.textContent = "❤ Na lista de desejos";
+        btn.style.borderColor = "rgba(255,80,80,0.5)";
+        btn.style.color = "#ff6666";
+      }
+
+      carregarFavoritosMenu();
     }
   </script>
 

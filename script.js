@@ -399,6 +399,8 @@ async function atualizarAuth() {
     if (userBox) {
       userBox.style.display = "flex";
       if (userEmail) userEmail.textContent = nome;
+      const avatar = document.getElementById("userAvatar");
+      if (avatar) avatar.textContent = nome.charAt(0).toUpperCase();
     } else if (loginBtn) {
       // páginas sem #userBox no HTML (ex: detalhes.html)
       const actions = loginBtn.closest(".actions") || loginBtn.parentElement;
