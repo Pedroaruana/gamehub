@@ -31,35 +31,46 @@ window.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    if (modo === "login") {
+    btnLogin.disabled = true;
+    const textoOriginal = btnLogin.textContent;
+    btnLogin.textContent = "Aguarde...";
 
-      const { error } = await window.supabaseClient.auth.signInWithPassword({
-        email: email.value,
-        password: password.value
-      });
+    try {
+      if (modo === "login") {
 
-      if (error) {
-        alert("Erro no login: " + error.message);
-        return;
+        const { error } = await window.supabaseClient.auth.signInWithPassword({
+          email: email.value,
+          password: password.value
+        });
+
+        if (error) {
+          alert("Erro no login: " + error.message);
+          return;
+        }
+
+        window.location.href = "index.html";
+
+      } else {
+
+        const { error } = await window.supabaseClient.auth.signUp({
+          email: email.value,
+          password: password.value
+        });
+
+        if (error) {
+          alert("Erro ao criar conta: " + error.message);
+          return;
+        }
+
+        const successScreen = document.getElementById("successScreen");
+        if (successScreen) successScreen.style.display = "flex";
+        tabLogin.click();
       }
-
-      window.location.href = "index.html";
-
-    } else {
-
-      const { error } = await window.supabaseClient.auth.signUp({
-        email: email.value,
-        password: password.value
-      });
-
-      if (error) {
-        alert("Erro ao criar conta: " + error.message);
-        return;
-      }
-
-      const successScreen = document.getElementById("successScreen");
-      if (successScreen) successScreen.style.display = "flex";
-      tabLogin.click();
+    } catch (e) {
+      alert("Erro de conexão. Tente novamente.");
+    } finally {
+      btnLogin.disabled = false;
+      btnLogin.textContent = textoOriginal;
     }
 
   });

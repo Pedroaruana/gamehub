@@ -420,7 +420,11 @@ async function atualizarAuth() {
 
 async function logout() {
   const sb = getSupabase();
-  await sb.auth.signOut();
+  try {
+    await sb.auth.signOut();
+  } catch (e) {
+    console.error("Erro ao fazer logout:", e);
+  }
   window.location.href = "index.html";
 }
 

@@ -308,15 +308,37 @@
 
 
 <script>
+// Inicializa jogo primeiro para que onclick e handlers tenham acesso
 const raw = localStorage.getItem("jogoSelecionado");
+let jogo = null;
 
+try {
+  jogo = JSON.parse(decodeURIComponent(raw));
+} catch (e) {
+  try {
+    jogo = JSON.parse(raw);
+  } catch (err) {
+    console.warn("Erro ao ler jogo:", err);
+  }
+}
+
+window.jogo = jogo; // expõe para atributos onclick
+
+if (jogo) {
+  document.getElementById("img").src      = jogo.thumbnail;
+  document.getElementById("banner").src   = jogo.thumbnail;
+  document.getElementById("titulo").innerText    = jogo.title;
+  document.getElementById("descricao").innerText = jogo.descricao || "Descrição não disponível.";
+  document.getElementById("plataforma").innerText = jogo.platform || "PC";
+  document.getElementById("preco").innerText      = "R$ " + (jogo.price || "0,00");
+}
 
 const favBtn = document.getElementById("favBtn");
 
 async function atualizarFav() {
+  if (!jogo) return;
   const { data: { user } } = await window.supabaseClient.auth.getUser();
-
-  if (!user || !jogo) return;
+  if (!user) return;
 
   const { data } = await window.supabaseClient
     .from("favoritos")
@@ -331,18 +353,14 @@ async function atualizarFav() {
 }
 
 favBtn.addEventListener("click", async () => {
+  if (!jogo) return;
 
   const { data: { user } } = await window.supabaseClient.auth.getUser();
-
-  if (!user) {
-    alert("Faça login");
-    return;
-  }
+  if (!user) { alert("Faça login"); return; }
 
   const ativo = favBtn.classList.contains("active");
 
   if (ativo) {
-
     await window.supabaseClient
       .from("favoritos")
       .delete()
@@ -351,52 +369,19 @@ favBtn.addEventListener("click", async () => {
 
     favBtn.classList.remove("active");
     favBtn.innerText = "♡";
-
   } else {
-
     await window.supabaseClient
       .from("favoritos")
-      .insert({
-        user_id: user.id,
-        jogo: jogo.title
-      });
+      .insert({ user_id: user.id, jogo: jogo.title });
 
     favBtn.classList.add("active");
     favBtn.innerText = "❤";
   }
 
-  carregarFavoritosMenu(); // atualiza menu lateral
+  carregarFavoritosMenu();
 });
 
 atualizarFav();
-
-
-let jogo = null;
-
-try {
-  jogo = JSON.parse(decodeURIComponent(raw));
-} catch (e) {
-  try {
-    jogo = JSON.parse(raw);
-  } catch (err) {
-    console.log("Erro ao ler jogo:", err);
-  }
-}
-
-console.log("JOGO FINAL:", jogo);
-
-if (jogo) {
-  document.getElementById("img").src = jogo.thumbnail;
-  document.getElementById("banner").src = jogo.thumbnail;
-
-  document.getElementById("titulo").innerText = jogo.title;
-  document.getElementById("descricao").innerText = jogo.descricao || "Descrição não disponível.";
-
-  document.getElementById("plataforma").innerText = jogo.platform || "PC";
-
-  document.getElementById("preco").innerText =
-    "R$ " + (jogo.price || "0,00");
-}
 </script>
 
 
