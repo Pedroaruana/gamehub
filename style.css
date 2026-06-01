@@ -326,59 +326,200 @@ body {
   display: flex;
   align-items: center;
   padding: 60px;
-  margin-top: 60px; /* compensa o header fixed */
+  margin-top: 60px;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   z-index: 1;
+  overflow: hidden;
 }
 
 .hero::after {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(to right, rgba(0, 0, 0, 0.9), rgba(255, 0, 0, 0.3));
+  background: linear-gradient(
+    to right,
+    rgba(0,0,0,0.92) 0%,
+    rgba(0,0,0,0.65) 45%,
+    rgba(180,10,10,0.18) 100%
+  );
   z-index: 1;
 }
 
 .hero-info {
   position: relative;
   z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  animation: heroFadeIn 0.8s ease both;
 }
 
-.hero-title {
-  font-size: 42px;
-  font-weight: 800;
+@keyframes heroFadeIn {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Badge */
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, #ff2222, #cc0000);
   color: #fff;
-  letter-spacing: 2px;
-  margin: 0;
-  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
-  max-width: 600px;
-  line-height: 1.1;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  padding: 5px 14px;
+  border-radius: 20px;
+  width: fit-content;
+  box-shadow: 0 4px 14px rgba(255,30,30,0.45);
 }
 
+/* Título */
+.hero-title {
+  font-size: 56px;
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: 3px;
+  margin: 0;
+  line-height: 1;
+  text-shadow: 0 2px 30px rgba(0,0,0,0.8), 0 0 60px rgba(255,60,60,0.15);
+}
+
+/* Subtítulo */
 .hero-sub {
-  font-size: 20px;
-  color: #d0d0d0;
-  margin-top: 10px;
-  margin-bottom: 25px;
+  font-size: 17px;
+  color: rgba(255,255,255,0.65);
+  margin: 0;
+  letter-spacing: .04em;
+}
+
+/* Meta (rating + plataformas) */
+.hero-meta {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.hero-rating {
+  color: #fbbf24;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.hero-rating span {
+  color: rgba(255,255,255,0.5);
+  font-size: 13px;
+  font-weight: 400;
+  margin-left: 4px;
+}
+
+.hero-platforms {
+  display: flex;
+  gap: 7px;
+}
+
+.hero-platforms span {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.18);
+  color: rgba(255,255,255,0.75);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 4px;
+  letter-spacing: .04em;
+}
+
+/* Preço */
+.hero-price-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.hero-old-price {
+  color: rgba(255,255,255,0.35);
+  font-size: 16px;
+  text-decoration: line-through;
+}
+
+.hero-new-price {
+  color: #fff;
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: .02em;
+}
+
+.hero-discount {
+  background: #00cc44;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 6px;
+}
+
+/* Botões */
+.hero-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
 .hero-btn {
-  background: #00ff55;
+  background: linear-gradient(135deg, #00e64d, #00b33c);
   color: #000;
   border: none;
-  padding: 12px 24px;
-  border-radius: 6px;
-  font-weight: 700;
+  padding: 14px 32px;
+  border-radius: 8px;
+  font-weight: 800;
   font-size: 15px;
+  letter-spacing: .05em;
   cursor: pointer;
   transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 6px 20px rgba(0,200,60,0.4);
 }
 
 .hero-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(0, 255, 85, 0.4);
+  box-shadow: 0 10px 28px rgba(0,230,77,0.55);
+}
+
+.hero-btn-wish {
+  background: transparent;
+  color: rgba(255,255,255,0.7);
+  border: 1px solid rgba(255,255,255,0.25);
+  padding: 13px 22px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+
+.hero-btn-wish:hover {
+  border-color: rgba(255,255,255,0.5);
+  color: #fff;
+  background: rgba(255,255,255,0.07);
+}
+
+/* Trust badges */
+.hero-trust {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.hero-trust span {
+  color: rgba(255,255,255,0.45);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: .03em;
 }
 
 /* ===========================
