@@ -70,6 +70,28 @@ GameHub é uma plataforma full stack de e-commerce de jogos digitais, inspirada 
 - Tabelas: `pedidos`, `pedido_itens`, `favoritos`, `carrinho`
 
 ---
+
+## 📁 Estrutura do Projeto
+
+```
+gamehub/
+├── frontend/          # HTML, CSS, JS, imagens
+│   ├── index.html
+│   ├── login.html
+│   ├── checkout.html
+│   ├── detalhes.html
+│   ├── sucesso.html
+│   ├── style.css
+│   ├── script.js
+│   └── ...
+├── backend/           # API Python
+│   ├── main.py
+│   └── requirements.txt
+└── README.md
+```
+
+---
+
 📌 Status do Projeto
 ✔ Frontend online
 ✔ Backend deployado
@@ -81,16 +103,16 @@ GameHub é uma plataforma full stack de e-commerce de jogos digitais, inspirada 
 ## 📸 Screenshots do projeto
 
 ### 🏠 Home
-![Home](./images/homes.png)
+![Home](./frontend/images/homes.png)
 
 ### 🛒 Login
-![Login](./images/loginn.png)
+![Login](./frontend/images/loginn.png)
 
 ### 💳 Checkout
-![Checkout](./images/checkouts.png)
+![Checkout](./frontend/images/checkouts.png)
 
 ### 🎉 Sucesso
-![Sucesso](./images/sucessos.png)
+![Sucesso](./frontend/images/sucessos.png)
 
 
 👨‍💻 Autor
