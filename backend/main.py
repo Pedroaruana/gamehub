@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import Response
 from supabase import create_client
 from dotenv import load_dotenv
 import os
@@ -30,6 +31,11 @@ supabase = create_client(
 @app.get("/")
 def home():
     return {"status": "GameHub backend online"}
+
+# suporte a HEAD para UptimeRobot
+@app.head("/")
+def home_head():
+    return Response()
 
 # listar pedidos
 @app.get("/pedidos")
