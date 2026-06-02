@@ -5,5 +5,3 @@ window.supabaseClient = window.supabase.createClient(
   supabaseUrl,
   supabaseKey
 );
-
-console.log("Supabase OK");

@@ -9,6 +9,17 @@ function getSupabase() {
   return window.supabaseClient;
 }
 
+function escapeHtml(str) {
+  return String(str ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+let _tempBusca = [];
+
 /* ── Sidebar ─────────────────────────────── */
 
 function toggleSidebar() {
@@ -34,12 +45,12 @@ function criarCard(jogo) {
   card.classList.add("card");
 
   card.innerHTML = `
-    <img src="${jogo.thumbnail}" alt="${jogo.title}" loading="lazy">
+    <img src="${escapeHtml(jogo.thumbnail)}" alt="${escapeHtml(jogo.title)}" loading="lazy">
     <div class="card-overlay">
-      <h3 class="game-title">${jogo.title}</h3>
+      <h3 class="game-title">${escapeHtml(jogo.title)}</h3>
       <div class="price-box">
-        ${jogo.oldPrice ? `<span class="old-price">R$ ${jogo.oldPrice}</span>` : ""}
-        ${jogo.price    ? `<span class="new-price">R$ ${jogo.price}</span>`    : ""}
+        ${jogo.oldPrice ? `<span class="old-price">R$ ${escapeHtml(String(jogo.oldPrice))}</span>` : ""}
+        ${jogo.price    ? `<span class="new-price">R$ ${escapeHtml(String(jogo.price))}</span>`    : ""}
         <span class="cart" title="Adicionar ao carrinho">🛒</span>
         <span class="fav"  title="Favoritar">♡</span>
       </div>
@@ -196,7 +207,7 @@ async function carregarFavoritosMenu() {
   }
 
   menu.innerHTML = data.map(item =>
-    `<a href="#">${item.jogo}</a>`
+    `<a href="#">${escapeHtml(item.jogo)}</a>`
   ).join("");
 }
 
@@ -272,12 +283,12 @@ async function atualizarCarrinho() {
     total += preco;
     return `
       <div class="cart-item">
-        <img src="${item.thumbnail}" alt="${item.title}">
+        <img src="${escapeHtml(item.thumbnail)}" alt="${escapeHtml(item.title)}">
         <div class="cart-info">
-          <p>${item.title}</p>
+          <p>${escapeHtml(item.title)}</p>
           <span class="cart-price">R$ ${preco.toFixed(2).replace(".", ",")}</span>
         </div>
-        <span class="remove-item" onclick="removerItem(${item.id}, event)" title="Remover">✖</span>
+        <span class="remove-item" onclick="removerItem(${Number(item.id)}, event)" title="Remover">✖</span>
       </div>
     `;
   }).join("");
@@ -326,15 +337,14 @@ function inicializarBusca() {
       return;
     }
 
-    // guarda referências sem expor no DOM inline
-    window._tempBusca = encontrados;
+    _tempBusca = encontrados;
 
     searchResults.innerHTML = encontrados.map((jogo, i) => `
       <div class="search-item" data-busca-idx="${i}">
-        <img src="${jogo.thumbnail}" alt="${jogo.title}">
+        <img src="${escapeHtml(jogo.thumbnail)}" alt="${escapeHtml(jogo.title)}">
         <div class="search-info">
-          <h4>${jogo.title}</h4>
-          <span>R$ ${jogo.price}</span>
+          <h4>${escapeHtml(jogo.title)}</h4>
+          <span>R$ ${escapeHtml(String(jogo.price))}</span>
         </div>
       </div>
     `).join("");
@@ -343,7 +353,7 @@ function inicializarBusca() {
     searchResults.querySelectorAll(".search-item[data-busca-idx]").forEach(el => {
       el.addEventListener("click", () => {
         const idx = parseInt(el.dataset.buscaIdx, 10);
-        abrirJogo(window._tempBusca[idx]);
+        abrirJogo(_tempBusca[idx]);
       });
     });
   });
