@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends, Header, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import Response
 from pydantic import BaseModel, field_validator
@@ -36,6 +36,23 @@ METODOS_VALIDOS = {
 }
 
 
+# ── Auth ──────────────────────────────────────
+def get_current_user(authorization: str = Header(None)):
+    if not authorization or not authorization.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="Token não fornecido")
+    token = authorization.split(" ", 1)[1]
+    try:
+        result = supabase.auth.get_user(token)
+        if not result.user:
+            raise HTTPException(status_code=401, detail="Token inválido")
+        return result.user
+    except HTTPException:
+        raise
+    except Exception:
+        raise HTTPException(status_code=401, detail="Token inválido")
+
+
+# ── Models ────────────────────────────────────
 class ItemCarrinho(BaseModel):
     title: str
     price: float
@@ -58,7 +75,6 @@ class ItemCarrinho(BaseModel):
 
 
 class CheckoutData(BaseModel):
-    user_id: str
     metodo_pagamento: str
     itens: list[ItemCarrinho]
 
@@ -79,6 +95,7 @@ class CheckoutData(BaseModel):
         return v
 
 
+# ── Rotas ─────────────────────────────────────
 @app.get("/")
 def home():
     return {"status": "GameHub backend online"}
@@ -90,12 +107,12 @@ def home_head():
 
 
 @app.post("/checkout")
-def checkout(data: CheckoutData):
+def checkout(data: CheckoutData, user=Depends(get_current_user)):
     try:
         total = round(sum(item.price for item in data.itens), 2)
 
         pedido = supabase.table("pedidos").insert({
-            "user_id": data.user_id,
+            "user_id": user.id,
             "total": total,
             "metodo_pagamento": data.metodo_pagamento,
             "status": "pendente"
@@ -120,6 +137,8 @@ def checkout(data: CheckoutData):
 
         return {"success": True, "pedido_id": pedido_id}
 
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error("Erro no checkout: %s", e)
         return {"success": False, "error": "Erro interno. Tente novamente."}

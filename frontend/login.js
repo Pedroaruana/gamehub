@@ -27,7 +27,7 @@ window.addEventListener("DOMContentLoaded", () => {
   btnLogin.addEventListener("click", async () => {
 
     if (!email.value || !password.value) {
-      alert("Preencha e-mail e senha.");
+      showToast("Preencha e-mail e senha.", "warning");
       return;
     }
 
@@ -44,7 +44,7 @@ window.addEventListener("DOMContentLoaded", () => {
         });
 
         if (error) {
-          alert("Erro no login: " + error.message);
+          showToast("E-mail ou senha incorretos.", "error");
           return;
         }
 
@@ -59,9 +59,9 @@ window.addEventListener("DOMContentLoaded", () => {
 
         if (error) {
           if (error.message.includes("rate limit") || error.message.includes("email rate")) {
-            alert("Muitos cadastros em pouco tempo. Aguarde alguns minutos e tente novamente.");
+            showToast("Muitos cadastros em pouco tempo. Aguarde alguns minutos.", "warning");
           } else {
-            alert("Erro ao criar conta: " + error.message);
+            showToast("Erro ao criar conta. Tente novamente.", "error");
           }
           return;
         }
@@ -71,7 +71,7 @@ window.addEventListener("DOMContentLoaded", () => {
         tabLogin.click();
       }
     } catch (e) {
-      alert("Erro de conexão. Tente novamente.");
+      showToast("Erro de conexão. Tente novamente.", "error");
     } finally {
       btnLogin.disabled = false;
       btnLogin.textContent = textoOriginal;

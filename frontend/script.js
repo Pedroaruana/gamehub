@@ -110,6 +110,7 @@ async function carregarApiGames() {
     container.innerHTML = "";
 
     games.slice(0, 20).forEach((game, index) => {
+      // Preços fictícios para demo — jogos gratuitos da API não têm preço real
       const precoOriginal = Math.floor(Math.random() * 150) + 50;
       const desconto      = Math.floor(Math.random() * 70)  + 10;
       const precoFinal    = (precoOriginal * (1 - desconto / 100)).toFixed(2);
@@ -135,7 +136,7 @@ async function favoritar(e, nome, el) {
   const { data: { user } } = await sb.auth.getUser();
 
   if (!user) {
-    alert("Faça login para favoritar jogos.");
+    showToast("Faça login para favoritar jogos.", "warning");
     return;
   }
 
@@ -218,7 +219,7 @@ async function adicionarCarrinho(jogo) {
   const { data: { user } } = await sb.auth.getUser();
 
   if (!user) {
-    alert("Faça login para usar o carrinho.");
+    showToast("Faça login para usar o carrinho.", "warning");
     return;
   }
 
