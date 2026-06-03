@@ -4,6 +4,7 @@
 ![Python](https://img.shields.io/badge/Python-FastAPI-009688?logo=fastapi&logoColor=white)
 ![Supabase](https://img.shields.io/badge/Supabase-database-3ecf8e?logo=supabase&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/Frontend-JavaScript-f7df1e?logo=javascript&logoColor=black)
+![License](https://img.shields.io/badge/license-MIT-green)
 
 GameHub é uma plataforma full stack de e-commerce de jogos digitais, inspirada em plataformas como Steam e Nuuvem. O sistema permite listar jogos, favoritar, adicionar ao carrinho, finalizar compras, acompanhar pedidos e muito mais — com autenticação real e banco de dados integrado.
 
