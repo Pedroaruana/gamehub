@@ -938,66 +938,94 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 25px;
+  margin-bottom: 20px;
 }
 
 .top-title h2 {
-  font-size: 32px;
+  font-size: 28px;
+  font-weight: 700;
   color: white;
+  letter-spacing: 0.04em;
 }
 
 .top-title button {
   background: transparent;
-  border: 2px solid #fff;
-  color: white;
-  padding: 8px 16px;
+  border: 1px solid rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.6);
+  padding: 7px 18px;
   border-radius: 8px;
   cursor: pointer;
-  transition: border-color 0.2s, color 0.2s;
+  font-size: 13px;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
 }
 
 .top-title button:hover {
-  border-color: #00ff9c;
-  color: #00ff9c;
+  border-color: #3b82f6;
+  color: #3b82f6;
+  background: rgba(59,130,246,0.08);
 }
 
 .vendidos-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
+  gap: 12px;
 }
 
 .vendido-card {
   display: flex;
-  gap: 15px;
-  background: #123b97;
-  padding: 15px;
-  border-radius: 16px;
+  gap: 14px;
+  background: #0d1220;
+  border: 1px solid rgba(255,255,255,0.06);
+  padding: 14px;
+  border-radius: 14px;
   align-items: center;
   position: relative;
+  overflow: hidden;
+  transition: transform 0.2s ease, border-color 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+}
+
+.vendido-card::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: linear-gradient(180deg, #3b82f6, #7c3aed);
+  border-radius: 3px 0 0 3px;
+}
+
+.vendido-card:nth-child(1)::before { background: linear-gradient(180deg, #fbbf24, #f59e0b); }
+.vendido-card:nth-child(2)::before { background: linear-gradient(180deg, #9ca3af, #6b7280); }
+.vendido-card:nth-child(3)::before { background: linear-gradient(180deg, #cd7c3f, #92400e); }
+
+.vendido-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(59,130,246,0.2);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.4);
 }
 
 .rank {
-  position: absolute;
-  top: -8px;
-  left: -8px;
-  background: white;
-  color: black;
-  width: 28px;
-  height: 28px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-weight: bold;
-  border-radius: 6px;
+  font-size: 20px;
+  font-weight: 800;
+  color: rgba(255,255,255,0.1);
+  letter-spacing: -0.02em;
+  min-width: 28px;
+  text-align: center;
+  flex-shrink: 0;
+  line-height: 1;
 }
 
+.vendido-card:nth-child(1) .rank { color: rgba(251,191,36,0.5); }
+.vendido-card:nth-child(2) .rank { color: rgba(156,163,175,0.4); }
+.vendido-card:nth-child(3) .rank { color: rgba(205,124,63,0.45); }
+
 .vendido-img {
-  width: 80px;
-  height: 110px;
+  width: 70px;
+  height: 94px;
   object-fit: cover;
-  border-radius: 10px;
+  border-radius: 8px;
   flex-shrink: 0;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.5);
 }
 
 .vendido-info {
@@ -1006,9 +1034,10 @@ body {
 }
 
 .vendido-info h3 {
-  margin: 0 0 8px;
-  font-size: 16px;
-  color: white;
+  margin: 0 0 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #f1f5f9;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1016,53 +1045,95 @@ body {
 
 .platforms {
   display: flex;
-  gap: 6px;
+  gap: 5px;
   margin-bottom: 10px;
   flex-wrap: wrap;
 }
 
 .platforms span {
-  font-size: 11px;
-  background: rgba(0, 0, 0, 0.3);
-  padding: 3px 8px;
-  border-radius: 6px;
-  color: white;
+  font-size: 10px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  padding: 2px 7px;
+  border-radius: 4px;
+  color: #64748b;
+  letter-spacing: 0.03em;
 }
 
 .price-row {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 8px;
 }
 
+.price-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.row-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.desconto-badge {
+  font-size: 10px;
+  font-weight: 700;
+  background: rgba(34,197,94,0.1);
+  color: #22c55e;
+  border: 1px solid rgba(34,197,94,0.2);
+  padding: 2px 6px;
+  border-radius: 4px;
+  letter-spacing: 0.04em;
+}
+
 .countdown {
-  background: #e0482d;
-  color: white;
-  padding: 5px 10px;
+  background: rgba(239,68,68,0.1);
+  border: 1px solid rgba(239,68,68,0.2);
+  color: #f87171;
+  padding: 4px 9px;
   border-radius: 6px;
-  font-size: 11px;
-  font-weight: bold;
+  font-size: 10px;
+  font-weight: 700;
   white-space: nowrap;
+  letter-spacing: 0.03em;
 }
 
 .actions-vendido {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   align-items: center;
+  margin-left: auto;
 }
 
 .actions-vendido .cart,
 .actions-vendido .fav {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 7px;
   cursor: pointer;
-  font-size: 18px;
-  transition: transform 0.2s;
+  font-size: 14px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  transition: all 0.2s;
 }
 
-.actions-vendido .cart:hover,
+.actions-vendido .cart:hover {
+  background: rgba(59,130,246,0.15);
+  border-color: rgba(59,130,246,0.35);
+  transform: scale(1.1);
+}
+
 .actions-vendido .fav:hover {
-  transform: scale(1.2);
+  background: rgba(239,68,68,0.15);
+  border-color: rgba(239,68,68,0.35);
+  transform: scale(1.1);
 }
 
 /* ===========================
