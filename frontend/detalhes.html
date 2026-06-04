@@ -384,7 +384,7 @@ favBtn.addEventListener("click", async () => {
   if (!jogo) return;
 
   const { data: { user } } = await window.supabaseClient.auth.getUser();
-  if (!user) { alert("Faça login"); return; }
+  if (!user) { showToast("Faça login para favoritar.", "warning"); return; }
 
   const ativo = favBtn.classList.contains("active");
 

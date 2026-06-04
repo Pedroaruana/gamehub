@@ -2,6 +2,7 @@ from fastapi import FastAPI, Depends, Header, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import Response
 from pydantic import BaseModel, field_validator
+from typing import Optional
 from supabase import create_client
 from dotenv import load_dotenv
 import os
@@ -17,7 +18,10 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "https://gamehub-omega-blond.vercel.app"
+        "https://gamehub-omega-blond.vercel.app",
+        "http://localhost",
+        "http://localhost:5500",
+        "http://127.0.0.1:5500"
     ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -54,9 +58,11 @@ def get_current_user(authorization: str = Header(None)):
 
 # ── Models ────────────────────────────────────
 class ItemCarrinho(BaseModel):
+    model_config = {"extra": "ignore"}
+
     title: str
     price: float
-    thumbnail: str
+    thumbnail: Optional[str] = ""
 
     @field_validator("price")
     @classmethod
