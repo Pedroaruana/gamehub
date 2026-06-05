@@ -208,8 +208,22 @@ async function carregarFavoritosMenu() {
   }
 
   menu.innerHTML = data.map(item =>
-    `<a href="#">${escapeHtml(item.jogo)}</a>`
+    `<a href="#" class="fav-link" data-nome="${escapeHtml(item.jogo)}">${escapeHtml(item.jogo)}</a>`
   ).join("");
+
+  menu.querySelectorAll(".fav-link").forEach(link => {
+    link.addEventListener("click", (e) => {
+      e.preventDefault();
+      const nome = link.dataset.nome;
+      const jogo = (window.jogos || []).find(j => j.title === nome);
+      if (jogo) {
+        abrirJogo(jogo);
+      } else {
+        localStorage.setItem("jogoSelecionado", JSON.stringify({ title: nome, thumbnail: "", price: "" }));
+        window.location.href = "detalhes.html";
+      }
+    });
+  });
 }
 
 /* ── Carrinho ────────────────────────────── */
