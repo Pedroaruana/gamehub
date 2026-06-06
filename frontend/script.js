@@ -287,8 +287,19 @@ async function atualizarCarrinho() {
   countEl.textContent = carrinho.length;
 
   if (carrinho.length === 0) {
-    container.innerHTML = "<p style='text-align:center;color:#aaa'>Carrinho vazio</p>";
+    container.innerHTML = `
+      <div class="cart-empty">
+        <span class="cart-empty-icon">🛒</span>
+        <p>Seu carrinho está vazio</p>
+        <a href="#populares" class="cart-empty-btn" id="verJogosBtn">Ver jogos</a>
+      </div>
+    `;
     totalEl.textContent = "R$ 0,00";
+
+    document.getElementById("verJogosBtn")?.addEventListener("click", () => {
+      document.getElementById("cartDropdown")?.classList.remove("active");
+    });
+
     return;
   }
 

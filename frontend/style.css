@@ -505,6 +505,43 @@ body {
   animation: bounce 0.4s;
 }
 
+.cart-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 24px 16px;
+  text-align: center;
+}
+
+.cart-empty-icon {
+  font-size: 32px;
+  opacity: 0.5;
+}
+
+.cart-empty p {
+  color: #aaa;
+  font-size: 13px;
+  margin: 0;
+}
+
+.cart-empty-btn {
+  display: inline-block;
+  margin-top: 4px;
+  padding: 7px 18px;
+  background: #00ff9c;
+  color: #111;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+
+.cart-empty-btn:hover {
+  background: #00cc7a;
+}
+
 /* ===========================
    HERO
 =========================== */
