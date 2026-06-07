@@ -256,9 +256,41 @@ async function adicionarCarrinho(jogo) {
 async function removerItem(id, e) {
   if (e) e.stopPropagation();
 
-  const sb = getSupabase();
-  await sb.from("carrinho").delete().eq("id", id);
-  await atualizarCarrinho();
+  const item = e?.target?.closest(".cart-item");
+  if (!item) {
+    const sb = getSupabase();
+    await sb.from("carrinho").delete().eq("id", id);
+    await atualizarCarrinho();
+    return;
+  }
+
+  // já tem confirmação aberta nesse item
+  if (item.querySelector(".remove-confirm")) return;
+
+  const removeBtn = item.querySelector(".remove-item");
+  if (removeBtn) removeBtn.style.display = "none";
+
+  const confirmEl = document.createElement("div");
+  confirmEl.className = "remove-confirm";
+  confirmEl.innerHTML = `
+    <span>Remover?</span>
+    <button class="confirm-yes">Sim</button>
+    <button class="confirm-no">Não</button>
+  `;
+  item.appendChild(confirmEl);
+
+  confirmEl.querySelector(".confirm-yes").addEventListener("click", async (ev) => {
+    ev.stopPropagation();
+    const sb = getSupabase();
+    await sb.from("carrinho").delete().eq("id", id);
+    await atualizarCarrinho();
+  });
+
+  confirmEl.querySelector(".confirm-no").addEventListener("click", (ev) => {
+    ev.stopPropagation();
+    confirmEl.remove();
+    if (removeBtn) removeBtn.style.display = "";
+  });
 }
 
 async function atualizarCarrinho() {
