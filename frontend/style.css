@@ -1595,6 +1595,27 @@ body {
 /* ===========================
    PÁGINAS: DETALHES / GAME
 =========================== */
+.back-bar {
+  padding: 80px 40px 0;
+  background: #0f0f0f;
+}
+
+.back-btn {
+  background: transparent;
+  border: 1px solid #333;
+  color: #aaa;
+  padding: 7px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.back-btn:hover {
+  color: #fff;
+  border-color: #666;
+}
+
 .game-page {
   background: #0f0f0f;
   color: white;
