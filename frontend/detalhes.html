@@ -217,59 +217,58 @@
 
 </header>
   
-<div class="back-bar">
-  <button class="back-btn" onclick="history.back()">← Voltar</button>
-</div>
-
 <div class="game-page">
 
-  <div class="game-banner">
-    <img id="banner" src="">
+  <!-- HERO -->
+  <div class="game-hero">
+    <img id="banner" class="game-hero-img" src="">
+    <div class="game-hero-overlay">
+      <button class="back-btn" onclick="history.back()">← Voltar</button>
+    </div>
   </div>
 
-  <div class="game-container">
+  <!-- CONTEÚDO -->
+  <div class="game-body">
 
-    <div class="game-left">
-      <img id="img" class="game-cover">
-
-      <button class="btn-cart" onclick="adicionarCarrinho(jogo)">
-  🛒 Adicionar ao Carrinho
-</button>
-    </div>
-
-    <div class="game-right">
-
+    <!-- ESQUERDA: título + descrição + requisitos -->
+    <div class="game-main">
       <h1 id="titulo"></h1>
-
       <div class="game-meta">
         <span>📅 <span id="lancamento">2024</span></span>
         <span>🎮 <span id="genero">Ação</span></span>
         <span>💻 <span id="plataforma"></span></span>
       </div>
 
-     <div class="price-fav">
-  <div class="game-price" id="preco"></div>
-  <span id="favBtn" class="heart">♡</span>
-</div>
-      <h2>Sobre o jogo</h2>
+      <div class="game-about">
+        <h2>Sobre o jogo</h2>
+        <p id="descricao"></p>
+      </div>
 
-      <p id="descricao"></p>
-
+      <div class="game-requirements">
+        <h2>Requisitos Mínimos</h2>
+        <ul>
+          <li><strong>SO:</strong> Windows 10 64-bit</li>
+          <li><strong>Processador:</strong> Intel Core i5</li>
+          <li><strong>Memória:</strong> 8 GB RAM</li>
+          <li><strong>Vídeo:</strong> GTX 1050</li>
+          <li><strong>Armazenamento:</strong> 20 GB livres</li>
+        </ul>
+      </div>
     </div>
 
-  </div>
-
-  <div class="requirements">
-
-    <h2>Requisitos Mínimos</h2>
-
-    <ul>
-      <li><strong>SO:</strong> Windows 10 64-bit</li>
-      <li><strong>Processador:</strong> Intel Core i5</li>
-      <li><strong>Memória:</strong> 8 GB RAM</li>
-      <li><strong>Vídeo:</strong> GTX 1050</li>
-      <li><strong>Armazenamento:</strong> 20 GB livres</li>
-    </ul>
+    <!-- DIREITA: capa + caixa de compra -->
+    <div class="game-sidebar">
+      <img id="img" class="game-cover">
+      <div class="game-buy-box">
+        <div class="buy-price-row">
+          <div class="game-price" id="preco"></div>
+          <span id="favBtn" class="heart">♡</span>
+        </div>
+        <button class="btn-cart" onclick="adicionarCarrinho(jogo)">🛒 Comprar agora</button>
+        <button class="btn-wishlist" onclick="document.getElementById('favBtn').click()">♡ Lista de desejos</button>
+        <p class="buy-note">✔ Ativável na sua região</p>
+      </div>
+    </div>
 
   </div>
 
