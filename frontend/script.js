@@ -673,6 +673,7 @@ window.addEventListener("DOMContentLoaded", async () => {
   iniciarContagem();
   inicializarCartDropdown();
   inicializarOrdersDropdown();
+  inicializarNewsletter();
 
   // UI que depende de auth
   await atualizarAuth();
@@ -690,6 +691,57 @@ window.addEventListener("DOMContentLoaded", async () => {
 });
 
 
+
+/* ── Newsletter ──────────────────────────── */
+
+function inicializarNewsletter() {
+  const input = document.getElementById("newsletterEmail");
+  const btn   = document.getElementById("newsletterBtn");
+  if (!input || !btn) return;
+
+  btn.addEventListener("click", async () => {
+    const email = input.value.trim();
+
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      showToast("Digite um e-mail válido.", "warning");
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = "Cadastrando...";
+
+    try {
+      const sb = getSupabase();
+      const { error } = await sb.from("newsletter").insert({ email });
+
+      if (error) {
+        if (error.code === "23505") {
+          showToast("Esse e-mail já está cadastrado.", "info");
+        } else {
+          showToast("Erro ao cadastrar. Tente novamente.", "error");
+        }
+        btn.disabled = false;
+        btn.textContent = "Quero descontos";
+        return;
+      }
+
+      input.value = "";
+      btn.textContent = "Cadastrado!";
+      showToast("E-mail cadastrado com sucesso! 🎮", "success");
+
+      setTimeout(() => {
+        btn.disabled = false;
+        btn.textContent = "Quero descontos";
+      }, 3000);
+
+    } catch (err) {
+      console.error("Newsletter:", err);
+      showToast("Erro ao cadastrar. Tente novamente.", "error");
+      btn.disabled = false;
+      btn.textContent = "Quero descontos";
+    }
+  });
+}
 
 /* ── Expõe funções usadas inline no HTML ─── */
 window.removerItem    = removerItem;
