@@ -1322,9 +1322,10 @@ body {
    FOOTER
 =========================== */
 .footer {
-  background: #031f1a;
-  color: #ccc;
-  padding: 50px 40px;
+  background: #0a0a0a;
+  border-top: 1px solid #1a1a1a;
+  color: #666;
+  padding: 56px 60px 32px;
   margin-top: 60px;
 }
 
@@ -1332,80 +1333,107 @@ body {
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: 40px;
-  border-bottom: 1px solid rgba(0, 255, 150, 0.2);
-  padding-bottom: 30px;
+  gap: 48px;
+  padding-bottom: 40px;
+  border-bottom: 1px solid #1a1a1a;
+}
+
+.footer-brand {
+  max-width: 220px;
+}
+
+.footer-logo {
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 12px;
+  letter-spacing: 0.02em;
+}
+
+.footer-tagline {
+  font-size: 13px;
+  color: #555;
+  line-height: 1.7;
+  margin-bottom: 20px;
+}
+
+.social-icons {
+  display: flex;
+  gap: 10px;
+}
+
+.social-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: #1a1a1a;
+  border: 1px solid #222;
+  color: #777;
+  text-decoration: none;
+  transition: background 0.2s, color 0.2s;
+}
+
+.social-btn:hover {
+  background: #222;
+  color: #fff;
 }
 
 .footer-col {
-  min-width: 160px;
+  min-width: 140px;
 }
 
 .footer-col h3 {
-  color: #00ff9c;
-  margin-bottom: 15px;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  letter-spacing: 0.02em;
 }
 
 .footer-col a {
   display: block;
-  margin-bottom: 8px;
-  color: #aaa;
+  margin-bottom: 10px;
+  color: #555;
   text-decoration: none;
-  transition: color 0.3s;
+  font-size: 13px;
+  transition: color 0.2s;
 }
 
 .footer-col a:hover {
-  color: #00ff9c;
+  color: #ccc;
 }
 
-.social-icons span {
-  font-size: 22px;
-  margin-right: 10px;
-  cursor: pointer;
-  display: inline-block;
-  transition: transform 0.3s;
-}
-
-.social-icons span:hover {
-  transform: scale(1.2);
-}
-
-.secure {
-  margin-top: 15px;
-  font-size: 14px;
-  color: #00ff9c;
+.footer-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding-top: 28px;
 }
 
 .footer-payments {
-  margin-top: 30px;
-}
-
-.footer-payments h3 {
-  color: white;
-  margin-bottom: 15px;
-}
-
-.payments {
   display: flex;
-  gap: 15px;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
-.pay {
-  padding: 10px 15px;
+.pay-badge {
+  padding: 5px 12px;
   border-radius: 6px;
-  font-weight: bold;
-  font-size: 14px;
+  background: #141414;
+  border: 1px solid #222;
+  color: #666;
+  font-size: 12px;
+  font-weight: 500;
 }
-
-.nubank  { background: purple; }
-.pix     { background: #00c853; }
-.picpay  { background: #00ff9c; color: black; }
 
 .footer-copy {
-  margin-top: 30px;
-  font-size: 13px;
-  color: #777;
-  text-align: center;
+  font-size: 12px;
+  color: #333;
 }
 
 /* ===========================

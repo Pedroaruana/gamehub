@@ -665,6 +665,10 @@ window.addEventListener("DOMContentLoaded", async () => {
     return;
   }
 
+  // ano dinâmico no footer
+  const footerYear = document.getElementById("footerYear");
+  if (footerYear) footerYear.textContent = new Date().getFullYear();
+
   // UI que não depende de auth
   carregarHero();
   carregarJogos();
