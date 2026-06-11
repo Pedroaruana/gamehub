@@ -46,8 +46,21 @@ Está deployado e funcionando: frontend no Vercel, backend no Render, banco no S
 
 ```
 gamehub/
-├── frontend/    → HTML, CSS, JS, imagens
-├── backend/     → API em Python (FastAPI)
+├── frontend/
+│   ├── index.html        → página principal
+│   ├── login.html        → tela de login com animação 3D
+│   ├── detalhes.html     → página do jogo
+│   ├── checkout.html     → finalização de compra
+│   ├── sucesso.html      → confirmação do pedido
+│   ├── 404.html          → página de erro
+│   ├── style.css         → estilos globais
+│   ├── script.js         → lógica principal
+│   ├── jogos.js          → catálogo de jogos
+│   ├── toast.js          → sistema de notificações
+│   └── supabaseClient.js → conexão com o banco
+├── backend/
+│   ├── main.py           → API FastAPI (checkout, auth)
+│   └── requirements.txt
 └── README.md
 ```
 
@@ -69,4 +82,29 @@ gamehub/
 
 ---
 
-Desenvolvido por Pedro Aruanã
+## Dificuldades
+
+Algumas partes foram bem mais trabalhosas do que eu esperava.
+
+O deploy do backend deu bastante trabalho — o Render tem aquela coisa de dormir depois de inatividade, e configurar o ambiente de produção com as variáveis certas levou algumas tentativas até funcionar direito.
+
+A animação 3D da tela de login foi desafiadora. Nunca tinha mexido com Three.js antes, então entender como montar a cena, a câmera e os objetos foi um processo de muito teste e erro.
+
+Teve também um padrão chato que se repetiu algumas vezes: eu adicionava uma funcionalidade nova e quebrava algo que já tava funcionando. Aprender a testar melhor antes de subir virou um hábito a partir daí.
+
+E as políticas de RLS do Supabase no começo eram confusas pra mim. Entender a diferença entre política de leitura e escrita, e como o `user_id` precisava bater com o usuário autenticado, levou um tempo até ficar claro.
+
+---
+
+## Autor
+
+Feito por **Pedro Aruanã** — estudante de desenvolvimento web, construindo projetos reais pra aprender na prática.
+
+- GitHub: [github.com/Pedroaruana](https://github.com/Pedroaruana)
+- LinkedIn: [linkedin.com/in/pedro-aruanã](https://linkedin.com/in/pedro-aruan%C3%A3)
+
+---
+
+## Licença
+
+MIT © Pedro Aruanã
