@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meu Perfil – GameHub</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-top">
+    <div class="logo-side">🎮 GAMEHUB</div>
+    <span class="close-btn" onclick="toggleSidebar()">✖</span>
+  </div>
+  <div class="item-wrapper">
+    <a href="#" class="item">📋 CATEGORIAS</a>
+    <div class="submenu">
+      <a href="#">Ação</a><a href="#">RPG</a><a href="#">Terror</a><a href="#">Esporte</a>
+    </div>
+  </div>
+  <div class="item-wrapper">
+    <a href="#" class="item">🔥 OFERTAS RELÂMPAGO</a>
+    <div class="submenu">
+      <a href="#">Até R$20</a><a href="#">Até R$50</a><a href="#">Promoções do dia</a>
+    </div>
+  </div>
+  <div class="item-wrapper">
+    <a href="#" class="item">🎁 GIFT CARDS</a>
+    <div class="submenu">
+      <a href="#">XBOX</a><a href="#">PSN</a><a href="#">PLAY STORE</a>
+    </div>
+  </div>
+  <hr>
+  <div class="item-wrapper">
+    <a href="#" class="item">🖥 PC</a>
+    <div class="submenu">
+      <a href="#">Steam</a><a href="#">Epic Games</a><a href="#">Ubisoft</a>
+    </div>
+  </div>
+  <div class="item-wrapper">
+    <a href="#" class="item">🎮 PLAYSTATION</a>
+    <div class="submenu"><a href="#">PS4</a><a href="#">PS5</a></div>
+  </div>
+  <div class="item-wrapper">
+    <a href="#" class="item">🎮 XBOX</a>
+    <div class="submenu"><a href="#">Xbox One</a><a href="#">Xbox Series</a></div>
+  </div>
+  <div class="item-wrapper">
+    <a href="#" class="item">🎮 NINTENDO</a>
+    <div class="submenu"><a href="#">Switch</a></div>
+  </div>
+  <div class="item-wrapper">
+    <a href="#" class="item">📱 MOBILE</a>
+    <div class="submenu"><a href="#">Android</a><a href="#">iOS</a></div>
+  </div>
+  <hr>
+  <div class="item-wrapper">
+    <a href="#" class="item">❤️ FAVORITOS</a>
+    <div class="submenu" id="favoritosMenu"><span>Nenhum favorito</span></div>
+  </div>
+  <div class="item-wrapper">
+    <a href="#" class="item">💰 CASHBACK</a>
+    <div class="submenu"><a href="#">Como funciona</a><a href="#">Minhas recompensas</a></div>
+  </div>
+</div>
+
+<!-- OVERLAY -->
+<div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="left">
+    <div class="menu" onclick="toggleSidebar()">☰</div>
+    <a href="index.html" class="logo">GAMEHUB</a>
+  </div>
+  <div class="search-box center">
+    <input type="text" id="searchInput" placeholder="Pesquisar jogos..." autocomplete="off">
+    <span class="search-icon">🔍</span>
+    <div id="searchResults" class="search-results"></div>
+  </div>
+  <div class="actions">
+    <div class="orders-header" id="ordersHeader">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+        <polyline points="14 2 14 8 20 8"/>
+        <line x1="16" y1="13" x2="8" y2="13"/>
+        <line x1="16" y1="17" x2="8" y2="17"/>
+      </svg>
+      <div class="orders-dropdown" id="ordersDropdown">
+        <div class="orders-top-title">
+          <div class="orders-title-left">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <line x1="16" y1="13" x2="8" y2="13"/>
+              <line x1="16" y1="17" x2="8" y2="17"/>
+            </svg>
+            Meus Pedidos
+          </div>
+          <span class="orders-count-badge" id="ordersCountBadge"></span>
+        </div>
+        <div class="orders-content" id="ordersContent">
+          <p style="color:#64748b;text-align:center;padding:24px 0;font-size:13px">Carregando...</p>
+        </div>
+      </div>
+    </div>
+    <div class="cart-header" id="cartHeader">
+      🛒
+      <span class="cart-count" id="cartCount">0</span>
+      <div class="cart-dropdown" id="cartDropdown">
+        <div class="cart-content"><p class="empty">Seu carrinho está vazio</p></div>
+        <div class="cart-footer">
+          <div class="subtotal">Subtotal: <span id="cartTotal">R$ 0,00</span></div>
+          <button class="finish-btn" onclick="irParaCheckout()">Finalizar</button>
+        </div>
+      </div>
+    </div>
+    <button class="login" onclick="window.location.href='login.html'">ENTRAR</button>
+    <div class="user-box" id="userBox" style="display:none;">
+      <div class="user-avatar" id="userAvatar"></div>
+      <div class="user-info">
+        <span class="user-name" id="userEmail"></span>
+        <a href="#" id="logoutBtn" onclick="logout(); return false;">Sair</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- PERFIL -->
+<div class="profile-page">
+
+  <!-- HERO -->
+  <div class="profile-hero">
+    <div class="profile-avatar-big" id="profileAvatarBig">?</div>
+    <div class="profile-hero-info">
+      <h2 id="profileName">Carregando...</h2>
+      <span id="profileEmail" class="profile-email-text"></span>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="profile-tabs-bar">
+    <button class="profile-tab active" data-tab="conta">Minha Conta</button>
+    <button class="profile-tab" data-tab="pedidos">Meus Pedidos</button>
+    <button class="profile-tab" data-tab="carteira">Minha Carteira</button>
+  </div>
+
+  <!-- CONTEÚDO -->
+  <div class="profile-body">
+
+    <!-- MINHA CONTA -->
+    <div class="profile-tab-content active" id="tab-conta">
+      <div class="profile-card">
+        <h3>Informações da conta</h3>
+        <div class="profile-field">
+          <label>E-mail</label>
+          <input type="text" id="fieldEmail" disabled placeholder="—">
+        </div>
+        <div class="profile-field">
+          <label>Nome de exibição</label>
+          <input type="text" id="fieldNome" placeholder="Como quer ser chamado?">
+        </div>
+        <div class="profile-field-row">
+          <div class="profile-field">
+            <label>Telefone</label>
+            <input type="text" id="fieldTelefone" placeholder="(00) 00000-0000">
+          </div>
+          <div class="profile-field">
+            <label>CPF</label>
+            <input type="text" id="fieldCpf" placeholder="000.000.000-00">
+          </div>
+        </div>
+        <button class="profile-save-btn" id="saveProfileBtn">Salvar alterações</button>
+      </div>
+
+      <div class="profile-card">
+        <h3>Segurança</h3>
+        <p class="profile-card-desc">Altere sua senha de acesso à conta.</p>
+        <div class="profile-field">
+          <label>Nova senha</label>
+          <input type="password" id="fieldNewPassword" placeholder="Mínimo 6 caracteres">
+        </div>
+        <button class="profile-save-btn" id="changePasswordBtn">Alterar senha</button>
+      </div>
+    </div>
+
+    <!-- MEUS PEDIDOS -->
+    <div class="profile-tab-content" id="tab-pedidos">
+      <div class="profile-card">
+        <h3>Meus Pedidos</h3>
+        <div id="profileOrdersContent">
+          <p style="color:#475569;text-align:center;padding:24px 0;font-size:13px">Carregando...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- MINHA CARTEIRA -->
+    <div class="profile-tab-content" id="tab-carteira">
+      <div class="profile-card profile-wallet">
+        <h3>Minha Carteira</h3>
+        <div class="wallet-balance">
+          <span class="wallet-label">Saldo disponível</span>
+          <span class="wallet-value">R$ 0,00</span>
+        </div>
+        <p class="profile-card-desc">Em breve você poderá adicionar saldo e usar na compra de jogos.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-top">
+    <div class="footer-brand">
+      <div class="footer-logo">🎮 GAMEHUB</div>
+      <p class="footer-tagline">Sua loja de jogos digitais.<br>Preços baixos, entrega imediata.</p>
+      <div class="social-icons">
+        <a href="#" class="social-btn" title="Twitter">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.259 5.631 5.905-5.631zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        </a>
+        <a href="#" class="social-btn" title="Instagram">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+        </a>
+        <a href="#" class="social-btn" title="Discord">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03z"/></svg>
+        </a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h3>Sobre</h3>
+      <a href="#">Sobre o GameHub</a>
+      <a href="#">Política de privacidade</a>
+      <a href="#">Termos de uso</a>
+    </div>
+    <div class="footer-col">
+      <h3>Suporte</h3>
+      <a href="#">Ajuda</a>
+      <a href="#">Contato</a>
+      <a href="#">Chat ao vivo</a>
+    </div>
+    <div class="footer-col">
+      <h3>Afiliados</h3>
+      <a href="#">Programa de afiliados</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-payments">
+      <span class="pay-badge">Pix</span>
+      <span class="pay-badge">Boleto</span>
+      <span class="pay-badge">Visa</span>
+      <span class="pay-badge">Mastercard</span>
+      <span class="pay-badge">PayPal</span>
+    </div>
+    <div class="footer-copy">© <span id="footerYear"></span> GameHub — Todos os direitos reservados</div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabaseClient.js"></script>
+<script src="toast.js"></script>
+<script src="jogos.js"></script>
+<script src="script.js"></script>
+
+<script>
+// tabs
+document.querySelectorAll(".profile-tab").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".profile-tab").forEach(b => b.classList.remove("active"));
+    document.querySelectorAll(".profile-tab-content").forEach(c => c.classList.remove("active"));
+    btn.classList.add("active");
+    document.getElementById("tab-" + btn.dataset.tab).classList.add("active");
+  });
+});
+</script>
+
+</body>
+</html>

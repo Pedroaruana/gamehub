@@ -475,8 +475,11 @@ async function atualizarAuth() {
       const actions = loginBtn.closest(".actions") || loginBtn.parentElement;
       actions.insertAdjacentHTML("beforeend", `
         <div class="user-box" id="userBox" style="display:flex">
-          <span id="userEmail">${nome}</span>
-          <a href="#" id="logoutBtn">Sair</a>
+          <a href="perfil.html" class="user-avatar" id="userAvatar">${nome.charAt(0).toUpperCase()}</a>
+          <div class="user-info">
+            <a href="perfil.html" class="user-name" id="userEmail">${nome}</a>
+            <a href="#" id="logoutBtn">Sair</a>
+          </div>
         </div>
       `);
       document.getElementById("logoutBtn")
