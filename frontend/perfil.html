@@ -277,6 +277,27 @@ document.querySelectorAll(".profile-tab").forEach(btn => {
     document.getElementById("tab-" + btn.dataset.tab).classList.add("active");
   });
 });
+
+// carregar dados do usuário
+async function carregarPerfil() {
+  const sb = window.supabaseClient;
+  const { data: { user } } = await sb.auth.getUser();
+
+  if (!user) {
+    window.location.href = "login.html";
+    return;
+  }
+
+  const nome = user.email.split("@")[0];
+  const inicial = nome.charAt(0).toUpperCase();
+
+  document.getElementById("profileAvatarBig").textContent = inicial;
+  document.getElementById("profileName").textContent = nome;
+  document.getElementById("profileEmail").textContent = user.email;
+  document.getElementById("fieldEmail").value = user.email;
+}
+
+carregarPerfil();
 </script>
 
 </body>
