@@ -288,16 +288,106 @@ async function carregarPerfil() {
     return;
   }
 
-  const nome = user.email.split("@")[0];
-  const inicial = nome.charAt(0).toUpperCase();
+  const meta = user.user_metadata || {};
+  const nomeExibicao = meta.nome || user.email.split("@")[0];
+  const inicial = nomeExibicao.charAt(0).toUpperCase();
 
   document.getElementById("profileAvatarBig").textContent = inicial;
-  document.getElementById("profileName").textContent = nome;
+  document.getElementById("profileName").textContent = nomeExibicao;
   document.getElementById("profileEmail").textContent = user.email;
   document.getElementById("fieldEmail").value = user.email;
+  document.getElementById("fieldNome").value = meta.nome || "";
+  document.getElementById("fieldTelefone").value = meta.telefone || "";
+  document.getElementById("fieldCpf").value = meta.cpf || "";
 }
 
 carregarPerfil();
+
+// salvar dados do perfil
+document.getElementById("saveProfileBtn").addEventListener("click", async () => {
+  const nome     = document.getElementById("fieldNome").value.trim();
+  const telefone = document.getElementById("fieldTelefone").value.trim();
+  const cpf      = document.getElementById("fieldCpf").value.trim();
+
+  const btn = document.getElementById("saveProfileBtn");
+  btn.disabled = true;
+  btn.textContent = "Salvando...";
+
+  try {
+    const sb = window.supabaseClient;
+    const { error } = await sb.auth.updateUser({ data: { nome, telefone, cpf } });
+
+    if (error) {
+      showToast("Erro ao salvar. Tente novamente.", "error");
+    } else {
+      if (nome) {
+        document.getElementById("profileName").textContent = nome;
+        document.getElementById("profileAvatarBig").textContent = nome.charAt(0).toUpperCase();
+      }
+      showToast("Perfil atualizado!", "success");
+    }
+  } catch (e) {
+    showToast("Erro inesperado. Tente novamente.", "error");
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Salvar alterações";
+  }
+});
+
+// carregar pedidos na aba
+async function carregarPedidosPerfil() {
+  const container = document.getElementById("profileOrdersContent");
+  if (!container) return;
+
+  const sb = window.supabaseClient;
+  const { data: { user } } = await sb.auth.getUser();
+  if (!user) return;
+
+  const { data: pedidos, error } = await sb
+    .from("pedidos")
+    .select("*")
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false });
+
+  if (error || !pedidos || pedidos.length === 0) {
+    container.innerHTML = "<p style='color:#475569;text-align:center;padding:24px 0;font-size:13px'>Nenhum pedido encontrado</p>";
+    return;
+  }
+
+  const metodoLabel = {
+    pix: "Pix", boleto: "Boleto", paypal: "PayPal",
+    applepay: "Apple Pay", binance: "Binance Pay",
+    cartao_parcelado: "Cartão Parcelado",
+    cartao_avista_visa: "Visa", cartao_avista_master: "Mastercard",
+    cartao_avista_elo: "Elo", cartao_avista_amex: "Amex"
+  };
+
+  container.innerHTML = pedidos.map(p => {
+    const status  = p.status || "pendente";
+    const metodo  = metodoLabel[p.metodo_pagamento] || (p.metodo_pagamento || "—").replace(/_/g, " ");
+    const total   = "R$ " + Number(p.total).toFixed(2).replace(".", ",");
+    const idCurto = String(p.id).slice(0, 8).toUpperCase();
+    const data    = p.created_at
+      ? new Date(p.created_at).toLocaleDateString("pt-BR", { day: "2-digit", month: "short", year: "numeric" })
+      : "";
+    return `
+      <div class="order-card ${status}">
+        <div class="order-card-left">
+          <span class="order-card-id">#${idCurto}</span>
+          <span class="order-card-total">${total}</span>
+          <div class="order-card-meta">
+            <span>${metodo}</span>
+            ${data ? `<span>${data}</span>` : ""}
+          </div>
+        </div>
+        <span class="order-card-status ${status}">${status}</span>
+      </div>
+    `;
+  }).join("");
+}
+
+// carregar pedidos ao clicar na aba
+document.querySelector('[data-tab="pedidos"]').addEventListener("click", carregarPedidosPerfil);
 
 // alterar senha
 document.getElementById("changePasswordBtn").addEventListener("click", async () => {
