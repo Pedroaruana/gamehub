@@ -298,6 +298,38 @@ async function carregarPerfil() {
 }
 
 carregarPerfil();
+
+// alterar senha
+document.getElementById("changePasswordBtn").addEventListener("click", async () => {
+  const input = document.getElementById("fieldNewPassword");
+  const senha = input.value.trim();
+
+  if (senha.length < 6) {
+    showToast("A senha precisa ter pelo menos 6 caracteres.", "warning");
+    return;
+  }
+
+  const btn = document.getElementById("changePasswordBtn");
+  btn.disabled = true;
+  btn.textContent = "Salvando...";
+
+  try {
+    const sb = window.supabaseClient;
+    const { error } = await sb.auth.updateUser({ password: senha });
+
+    if (error) {
+      showToast("Erro ao alterar senha. Tente novamente.", "error");
+    } else {
+      input.value = "";
+      showToast("Senha alterada com sucesso!", "success");
+    }
+  } catch (e) {
+    showToast("Erro inesperado. Tente novamente.", "error");
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Alterar senha";
+  }
+});
 </script>
 
 </body>
