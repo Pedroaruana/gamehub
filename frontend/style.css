@@ -2161,3 +2161,112 @@ label {
     min-height: 400px;
   }
 }
+
+/* ===========================
+   CASHBACK PANEL
+=========================== */
+.cashback-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 3500;
+}
+
+.cashback-overlay.open {
+  display: block;
+}
+
+.cashback-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 420px;
+  height: 100vh;
+  background: #0d1117;
+  border-left: 1px solid #1e2a3a;
+  z-index: 3600;
+  transform: translateX(100%);
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.cashback-panel.open {
+  transform: translateX(0);
+}
+
+.cashback-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid #1e2a3a;
+}
+
+.cashback-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.cashback-close {
+  background: none;
+  border: none;
+  color: #666;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: color 0.2s, background 0.2s;
+}
+
+.cashback-close:hover {
+  color: #fff;
+  background: #1a1a2e;
+}
+
+.cashback-tabs {
+  display: flex;
+  border-bottom: 1px solid #1e2a3a;
+  padding: 0 24px;
+  gap: 4px;
+}
+
+.cashback-tab {
+  background: none;
+  border: none;
+  color: #666;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 14px 16px;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.cashback-tab:hover {
+  color: #aaa;
+}
+
+.cashback-tab.active {
+  color: #00ff9c;
+  border-bottom-color: #00ff9c;
+}
+
+.cashback-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 28px 24px;
+}
+
+.cashback-body::-webkit-scrollbar {
+  width: 4px;
+}
+
+.cashback-body::-webkit-scrollbar-thumb {
+  background: #1e2a3a;
+  border-radius: 4px;
+}

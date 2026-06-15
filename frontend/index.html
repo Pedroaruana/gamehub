@@ -101,8 +101,8 @@
     <div class="item-wrapper">
       <a href="#" class="item">💰 CASHBACK</a>
       <div class="submenu">
-        <a href="#">Como funciona</a>
-        <a href="#">Minhas recompensas</a>
+        <a href="#" onclick="abrirCashback('como-funciona'); return false;">Como funciona</a>
+        <a href="#" onclick="abrirCashback('recompensas'); return false;">Minhas recompensas</a>
       </div>
     </div>
   </div>
@@ -504,6 +504,23 @@
 
   </footer>
 
+  <!-- CASHBACK PANEL -->
+  <div class="cashback-overlay" id="cashbackOverlay" onclick="fecharCashback()"></div>
+  <div class="cashback-panel" id="cashbackPanel">
+    <div class="cashback-header">
+      <div class="cashback-title">💰 Cashback</div>
+      <button class="cashback-close" onclick="fecharCashback()">✕</button>
+    </div>
+    <div class="cashback-tabs">
+      <button class="cashback-tab active" id="tabComoFunciona" onclick="trocarTabCashback('como-funciona')">Como funciona</button>
+      <button class="cashback-tab" id="tabRecompensas" onclick="trocarTabCashback('recompensas')">Minhas recompensas</button>
+    </div>
+    <div class="cashback-body">
+      <div class="cashback-content" id="cashbackComoFunciona"></div>
+      <div class="cashback-content" id="cashbackRecompensas" style="display:none"></div>
+    </div>
+  </div>
+
   <!-- CHAT FLUTUANTE -->
   <div class="chat-btn" onclick="abrirChat()">💬</div>
 
@@ -532,6 +549,25 @@
     function scrollRow(id, amount) {
       const container = document.getElementById(id);
       if (container) container.scrollLeft += amount;
+    }
+
+    function abrirCashback(aba) {
+      document.getElementById('cashbackPanel').classList.add('open');
+      document.getElementById('cashbackOverlay').classList.add('open');
+      trocarTabCashback(aba || 'como-funciona');
+      toggleSidebar();
+    }
+
+    function fecharCashback() {
+      document.getElementById('cashbackPanel').classList.remove('open');
+      document.getElementById('cashbackOverlay').classList.remove('open');
+    }
+
+    function trocarTabCashback(aba) {
+      document.getElementById('cashbackComoFunciona').style.display = aba === 'como-funciona' ? 'block' : 'none';
+      document.getElementById('cashbackRecompensas').style.display = aba === 'recompensas' ? 'block' : 'none';
+      document.getElementById('tabComoFunciona').classList.toggle('active', aba === 'como-funciona');
+      document.getElementById('tabRecompensas').classList.toggle('active', aba === 'recompensas');
     }
 
     async function heroWish(btn) {
