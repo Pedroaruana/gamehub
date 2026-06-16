@@ -547,7 +547,28 @@
         </div>
         <div class="cb-note">💡 Cashback não expira enquanto sua conta estiver ativa.</div>
       </div>
-      <div class="cashback-content" id="cashbackRecompensas" style="display:none"></div>
+      <div class="cashback-content" id="cashbackRecompensas" style="display:none">
+        <div id="cashbackLogado" style="display:none">
+          <div class="cb-balance-card">
+            <span class="cb-balance-label">Saldo disponível</span>
+            <span class="cb-balance-value" id="cbSaldo">R$ 0,00</span>
+            <span class="cb-balance-sub">Use no checkout na próxima compra</span>
+          </div>
+          <div class="cb-history-title">Histórico</div>
+          <div id="cbHistorico" class="cb-history-empty">
+            <span>🎮</span>
+            <p>Nenhum cashback ainda</p>
+            <small>Faça sua primeira compra e ganhe 3% de volta</small>
+          </div>
+        </div>
+        <div id="cashbackDeslogado" style="display:none">
+          <div class="cb-login-prompt">
+            <span>🔒</span>
+            <p>Entre na sua conta para ver seu saldo de cashback</p>
+            <a href="login.html" class="cb-login-btn">Fazer login</a>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -598,6 +619,19 @@
       document.getElementById('cashbackRecompensas').style.display = aba === 'recompensas' ? 'block' : 'none';
       document.getElementById('tabComoFunciona').classList.toggle('active', aba === 'como-funciona');
       document.getElementById('tabRecompensas').classList.toggle('active', aba === 'recompensas');
+      if (aba === 'recompensas') carregarSaldoCashback();
+    }
+
+    async function carregarSaldoCashback() {
+      const sb = window.supabaseClient;
+      const { data: { user } } = await sb.auth.getUser();
+      if (user) {
+        document.getElementById('cashbackLogado').style.display = 'block';
+        document.getElementById('cashbackDeslogado').style.display = 'none';
+      } else {
+        document.getElementById('cashbackLogado').style.display = 'none';
+        document.getElementById('cashbackDeslogado').style.display = 'block';
+      }
     }
 
     async function heroWish(btn) {
