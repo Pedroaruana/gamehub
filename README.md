@@ -1,6 +1,7 @@
 # 🎮 GameHub
 
 ![Vercel](https://img.shields.io/badge/Vercel-deployed-black?logo=vercel&logoColor=white)
+![HuggingFace](https://img.shields.io/badge/HuggingFace-backend-ff9d00?logo=huggingface&logoColor=white)
 ![Python](https://img.shields.io/badge/Python-FastAPI-009688?logo=fastapi&logoColor=white)
 ![Supabase](https://img.shields.io/badge/Supabase-database-3ecf8e?logo=supabase&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/Frontend-JavaScript-f7df1e?logo=javascript&logoColor=black)
@@ -8,14 +9,14 @@
 
 Esse projeto nasceu da vontade de entender como funcionam as coisas por baixo de uma loja digital de verdade — autenticação, carrinho, checkout, banco de dados, tudo junto. Resolvi construir uma plataforma de jogos inspirada na Steam e na Nuuvem pra colocar isso em prática.
 
-Está deployado e funcionando: frontend no Vercel, backend no Render, banco no Supabase.
+Está deployado e funcionando: frontend no Vercel, backend no Hugging Face Spaces, banco no Supabase.
 
 ---
 
 ## Acesse
 
 - 🌐 Site: https://gamehub-omega-blond.vercel.app/
-- ⚙️ API: https://gamehub-sl9h.onrender.com
+- ⚙️ API: https://pedroaruana-gamehub-api.hf.space
 
 ---
 
@@ -38,7 +39,7 @@ Está deployado e funcionando: frontend no Vercel, backend no Render, banco no S
 
 **Banco:** Supabase (PostgreSQL). Row Level Security ativado em todas as tabelas — cada usuário só acessa os próprios dados.
 
-**Deploy:** Vercel (frontend) + Render (backend) + UptimeRobot pra manter o backend sempre acordado.
+**Deploy:** Vercel (frontend) + Hugging Face Spaces (backend) — sem sleep, disponível 24h.
 
 ---
 
@@ -60,7 +61,8 @@ gamehub/
 │   └── supabaseClient.js → conexão com o banco
 ├── backend/
 │   ├── main.py           → API FastAPI (checkout, auth)
-│   └── requirements.txt
+│   ├── requirements.txt
+│   └── Dockerfile        → container para deploy no Hugging Face
 └── README.md
 ```
 
@@ -86,7 +88,7 @@ gamehub/
 
 Algumas partes foram bem mais trabalhosas do que eu esperava.
 
-O deploy do backend deu bastante trabalho — o Render tem aquela coisa de dormir depois de inatividade, e configurar o ambiente de produção com as variáveis certas levou algumas tentativas até funcionar direito.
+O deploy do backend deu bastante trabalho — no Render o serviço dormia depois de inatividade e o pool de horas gratuitas era compartilhado entre projetos, o que causou instabilidade. Migrei pra o Hugging Face Spaces, que mantém o container rodando sem interrupção.
 
 A animação 3D da tela de login foi desafiadora. Nunca tinha mexido com Three.js antes, então entender como montar a cena, a câmera e os objetos foi um processo de muito teste e erro.
 
