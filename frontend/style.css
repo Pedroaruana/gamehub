@@ -2271,6 +2271,11 @@ label {
   border-radius: 4px;
 }
 
+.gc-tabs .cashback-tab {
+  font-size: 12px;
+  padding: 14px 10px;
+}
+
 .cb-highlight {
   display: flex;
   align-items: center;

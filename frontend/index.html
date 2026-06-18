@@ -41,9 +41,11 @@
     <div class="item-wrapper">
       <a href="#" class="item">🎁 GIFT CARDS</a>
       <div class="submenu">
-        <a href="#">XBOX</a>
-        <a href="#">PSN</a>
-        <a href="#">PLAY STORE</a>
+        <a href="#" onclick="abrirGiftCards('xbox'); return false;">XBOX</a>
+        <a href="#" onclick="abrirGiftCards('psn'); return false;">PSN</a>
+        <a href="#" onclick="abrirGiftCards('steam'); return false;">STEAM</a>
+        <a href="#" onclick="abrirGiftCards('playstore'); return false;">PLAY STORE</a>
+        <a href="#" onclick="abrirGiftCards('apple'); return false;">APPLE</a>
       </div>
     </div>
 
@@ -504,6 +506,29 @@
 
   </footer>
 
+  <!-- GIFT CARDS PANEL -->
+  <div class="cashback-overlay" id="giftCardsOverlay" onclick="fecharGiftCards()"></div>
+  <div class="cashback-panel" id="giftCardsPanel">
+    <div class="cashback-header">
+      <div class="cashback-title">🎁 Gift Cards</div>
+      <button class="cashback-close" onclick="fecharGiftCards()">✕</button>
+    </div>
+    <div class="cashback-tabs gc-tabs">
+      <button class="cashback-tab active" id="gcTabXbox" onclick="trocarTabGiftCards('xbox')">Xbox</button>
+      <button class="cashback-tab" id="gcTabPsn" onclick="trocarTabGiftCards('psn')">PSN</button>
+      <button class="cashback-tab" id="gcTabSteam" onclick="trocarTabGiftCards('steam')">Steam</button>
+      <button class="cashback-tab" id="gcTabPlaystore" onclick="trocarTabGiftCards('playstore')">Play Store</button>
+      <button class="cashback-tab" id="gcTabApple" onclick="trocarTabGiftCards('apple')">Apple</button>
+    </div>
+    <div class="cashback-body">
+      <div class="cashback-content" id="gcXbox"></div>
+      <div class="cashback-content" id="gcPsn" style="display:none"></div>
+      <div class="cashback-content" id="gcSteam" style="display:none"></div>
+      <div class="cashback-content" id="gcPlaystore" style="display:none"></div>
+      <div class="cashback-content" id="gcApple" style="display:none"></div>
+    </div>
+  </div>
+
   <!-- CASHBACK PANEL -->
   <div class="cashback-overlay" id="cashbackOverlay" onclick="fecharCashback()"></div>
   <div class="cashback-panel" id="cashbackPanel">
@@ -600,6 +625,28 @@
     function scrollRow(id, amount) {
       const container = document.getElementById(id);
       if (container) container.scrollLeft += amount;
+    }
+
+    const gcAbas = ['xbox', 'psn', 'steam', 'playstore', 'apple'];
+
+    function abrirGiftCards(aba) {
+      document.getElementById('giftCardsPanel').classList.add('open');
+      document.getElementById('giftCardsOverlay').classList.add('open');
+      trocarTabGiftCards(aba || 'xbox');
+      toggleSidebar();
+    }
+
+    function fecharGiftCards() {
+      document.getElementById('giftCardsPanel').classList.remove('open');
+      document.getElementById('giftCardsOverlay').classList.remove('open');
+    }
+
+    function trocarTabGiftCards(aba) {
+      gcAbas.forEach(a => {
+        document.getElementById('gc' + a.charAt(0).toUpperCase() + a.slice(1)).style.display = a === aba ? 'block' : 'none';
+        const tabId = 'gcTab' + a.charAt(0).toUpperCase() + a.slice(1);
+        document.getElementById(tabId).classList.toggle('active', a === aba);
+      });
     }
 
     function abrirCashback(aba) {
