@@ -7,6 +7,7 @@ from supabase import create_client
 from dotenv import load_dotenv
 import os
 import logging
+import httpx
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -41,15 +42,29 @@ METODOS_VALIDOS = {
 
 
 # ── Auth ──────────────────────────────────────
+class AuthUser:
+    def __init__(self, id):
+        self.id = id
+
 def get_current_user(authorization: str = Header(None)):
     if not authorization or not authorization.startswith("Bearer "):
         raise HTTPException(status_code=401, detail="Token não fornecido")
     token = authorization.split(" ", 1)[1]
     try:
-        result = supabase.auth.get_user(token)
-        if not result.user:
+        r = httpx.get(
+            f"{os.getenv('SUPABASE_URL')}/auth/v1/user",
+            headers={
+                "Authorization": f"Bearer {token}",
+                "apikey": os.getenv("SUPABASE_ANON_KEY")
+            },
+            timeout=10
+        )
+        if r.status_code != 200:
             raise HTTPException(status_code=401, detail="Token inválido")
-        return result.user
+        data = r.json()
+        if not data.get("id"):
+            raise HTTPException(status_code=401, detail="Token inválido")
+        return AuthUser(data["id"])
     except HTTPException:
         raise
     except Exception:
